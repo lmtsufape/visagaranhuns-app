@@ -1,0 +1,29 @@
+//const BASE_API = 'http://192.168.0.106'; //garanhuns
+const BASE_API = 'http://192.168.15.10'; //recife
+
+export default {
+    //verificar "token"
+    //checkToken: async (token) => {
+        //...
+    //},
+    //login - entrar
+    signIn: async (email, password) => {
+        const req = await fetch(`${BASE_API}/api/login?json=true`,
+        {
+            method:'POST',
+            headers:{
+                Acenpt: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email,password})
+        });
+        const json = await req.json();
+        return json;
+    }
+    /*
+    cadastro
+    signUp: async () => {
+        ...
+    }
+    */
+}
