@@ -18,19 +18,35 @@ export default() => {
 
     useEffect(()=>{
         const checkToken = async () => {
-            navigation.reset({
-                routes:[{name:'SingIn'}],
-            });
-            const token = await AsyncStorage.getItem('token');
-            /*if(token !== null){
+            //navigation.reset({
+            //    routes:[{name:'SingIn'}],
+            //});
+            const token = await AsyncStorage.getItem('token')
+            
+            if(token !== ''){
+                setTimeout(() => {
+                    navigation.reset({
+                        routes:[{name:'MainStackLogado'}]
+                    });
+                },2000)
+            }else{
+                navigation.reset({
+                    routes:[{name:'SignIn'}]
+                })
+            }
+
+            /*const token = await AsyncStorage.getItem('token');
+            if(token !== null){
                 //validar o token
                 let res = await Api.checkToken(token);
                 if(res.token){
                     await AsyncStorage.setItem('token', res.token);
                     userDispatch({
-                        type: 'setAvatar',
+                        type:'setAvatar',
                         payload:{
-                            avatar: res.data.avatar
+                            id:json.table_data[0].id,
+                            name:json.table_data[0].name,
+                            email:json.table_data[0].email,
                         }
                     });
                     navigation.reset({

@@ -4,13 +4,21 @@ export const initalState = {
     avatar: '',
     favorites: [],
     appointments: [],
-    perfil: []
+    
+    id:'',
+    name:'',
+    email:'',
 };
 
 export const UserReducer = (state, action) => {
-    switch(Action.type){
+    switch(action.type){
         case 'setAvatar':
-            return {...state, avatar: action.payload.avatar };
+            console.log(action.payload.id, action.payload.name, action.payload.email);
+            return {...state, 
+                id: action.payload.id,
+                name: action.payload.name,
+                email: action.payload.email 
+            };
             default:
                 return state;
     }

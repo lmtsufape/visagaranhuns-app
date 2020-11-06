@@ -20,21 +20,20 @@ export default() => {
         if(emailField != '' && passwordField != ''){
             let json = await Api.signIn(emailField, passwordField);
             if(json.success == 'true'){
-                //await AsyncStorage.setItem('token', json.token);
-                /*userDispatch({
+                //armazeno o token
+                await AsyncStorage.setItem('token', json.token);
+                //armazeno os dados o usuario logado
+                userDispatch({
                     type:'setAvatar',
                     payload:{
-                        perfil:json.table_data[0].id
+                        id:json.table_data[0].id,
+                        name:json.table_data[0].name,
+                        email:json.table_data[0].email,
                     }
-                })
-                */
-                
+                })      
                 navigation.reset({
                     routes:[{name:'MainTab'}]
                 })
-                
-                
-                //console.log(json.table_data[0].id);
             }else{
                 alert("E-mail e/ou senha errados!")
             }
@@ -57,15 +56,13 @@ export default() => {
                     placeholder="Digite seu e-mail"
                     value = {emailField}
                     onChangeText={t=>setEmailField(t)}
-                />
+q                />
                 <SignInput
                     placeholder="Digite sua senha"
                     value = {passwordField}
                     onChangeText={t=>setPasswordField(t)}
                     password={true}
-
                 />
-
                 <CustomButton onPress={handleSignClick}>
                     <CustomButtonText>Entrar</CustomButtonText>
                 </CustomButton>
