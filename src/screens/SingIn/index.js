@@ -32,7 +32,7 @@ export default() => {
                     }
                 })      
                 navigation.reset({
-                    routes:[{name:'MainTab'}]
+                    routes:[{name:'MainStackLogado'}]
                 })
             }else{
                 alert("E-mail e/ou senha errados!")

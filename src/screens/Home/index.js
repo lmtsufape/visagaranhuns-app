@@ -1,6 +1,8 @@
 import { HeaderTitle } from '@react-navigation/stack';
-import React from 'react';
+import React,{ useContext } from 'react';
 import { Text, Header } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import { UserContext } from '../../contexts/UserContext';
 import { useNavigation } from '@react-navigation/native';
 import { 
     Container,
@@ -20,6 +22,7 @@ import { CustomButtonProgramacao, CustomButtonHistorico, CustomButtonAtulizar, C
 
 export default () => {
 
+    const { dispatch: userDispatch} = useContext(UserContext);
     const navigation = useNavigation();
 
     const handleProgramacaoClick = async () =>{
@@ -31,6 +34,26 @@ export default () => {
     }
     const handleHistoricoClick = async () =>{
        navigation.navigate("Historic")
+    }
+    const handleLogoutClick = async () =>{
+            let novoId = "";
+            let novoName = "";
+            let novoEmail = "";
+            let novoToken = "";
+
+            await AsyncStorage.setItem('token',novoToken);
+
+            userDispatch({
+                type:'setAvatar',
+                payload:{
+                    id:novoId,
+                    name:novoName,
+                    email:novoEmail,
+                }
+            })     
+            navigation.reset({
+                routes:[{name:'SingIn'}]
+            })
     }
 
 
@@ -57,6 +80,9 @@ export default () => {
                 </CustomButtonHistorico>
                 <CustomButtonAtulizar>
                     <CustomButtonText>Atualizar</CustomButtonText>
+                </CustomButtonAtulizar>
+                <CustomButtonAtulizar  onPress={handleLogoutClick}>
+                    <CustomButtonText>Sair do sistema</CustomButtonText>
                 </CustomButtonAtulizar>
 
             </Scroller>

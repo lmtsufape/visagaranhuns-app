@@ -23,7 +23,7 @@ export default() => {
             //});
             const token = await AsyncStorage.getItem('token')
             
-            if(token !== ''){
+            if(token !== null){
                 setTimeout(() => {
                     navigation.reset({
                         routes:[{name:'MainStackLogado'}]
@@ -31,7 +31,7 @@ export default() => {
                 },2000)
             }else{
                 navigation.reset({
-                    routes:[{name:'SignIn'}]
+                    routes:[{name:'SingIn'}]
                 })
             }
 

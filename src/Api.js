@@ -1,5 +1,5 @@
-//const BASE_API = 'http://192.168.0.106'; //garanhuns
-const BASE_API = 'http://192.168.15.10'; //recife
+const BASE_API = 'http://192.168.0.106'; //garanhuns
+//const BASE_API = 'http://192.168.15.10'; //recife
 
 export default {
     //verificar "token"
@@ -30,10 +30,4 @@ export default {
         const json = await req.json();
         return json;
     }
-    /*
-    cadastro
-    signUp: async () => {
-        ...
-    }
-    */
 }
