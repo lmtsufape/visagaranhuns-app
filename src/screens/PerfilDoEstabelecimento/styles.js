@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-export const Container = styled.SafeAreaView`
-    background-color: #fff;
-    flex: 1;
+export const Container = styled.ScrollView` 
+    flex:1;
+    flexDirection:column;
     padding:20px;
 `;
 export const InfoAreaEstabelecimento = styled.View`
@@ -21,8 +21,8 @@ export const InfoAreaInspecao = styled.View`
     padding:15px;
     shadowOpacity: 0.27;
     elevation: 6;
-    
-    paddingBottom:30px;
+    marginBottom:50px;
+    paddingBottom:20px;
 `;
 export const InfoAreaEstabelecimentoText = styled.Text`
     marginTop:10px;

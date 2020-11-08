@@ -26,7 +26,7 @@ export default () => {
         let res = await Api.getInspecoes();
         if(res.success == 'true'){
             setList(res.table_data);
-            console.log(res.table_data);
+            //console.log(res.table_data);
         }else{
             alert("Error: Verifique sua conexão e tente novamente!");
         }

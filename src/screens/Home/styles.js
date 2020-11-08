@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.ScrollView`
     flex:1;
     background-color:#fff;
     `;
@@ -38,6 +38,8 @@ export const CustomButtonProgramacao = styled.TouchableOpacity`
     justify-content:space-between;
     flex-direction:row
     padding:25px;
+    shadowOpacity: 0.27;
+    elevation: 5;
 `;
 export const CustomButtonHistorico = styled.TouchableOpacity`
     marginTop:20px;
@@ -46,6 +48,8 @@ export const CustomButtonHistorico = styled.TouchableOpacity`
     justify-content:space-between;
     flex-direction:row
     padding:25px;
+    shadowOpacity: 0.27;
+    elevation: 5;
 `;
 export const CustomButtonAtulizar = styled.TouchableOpacity`
     marginTop:20px;
@@ -54,6 +58,8 @@ export const CustomButtonAtulizar = styled.TouchableOpacity`
     justify-content:space-between;
     flex-direction:row
     padding:25px;
+    shadowOpacity: 0.27;
+    elevation: 5;
 `;
 export const CustomButtonExit = styled.TouchableOpacity`
     marginTop:20px;
@@ -62,6 +68,9 @@ export const CustomButtonExit = styled.TouchableOpacity`
     justify-content:space-between;
     flex-direction:row
     padding:25px;
+    shadowOpacity: 0.27;
+    elevation: 5;
+    marginBottom:20px;
 
 `;
 export const CustomButtonText = styled.Text`

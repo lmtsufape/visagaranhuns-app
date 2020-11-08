@@ -26,16 +26,16 @@ export default () => {
 
     });
     const handleDocumentacaoClick = async () =>{
-       navigation.navigate("Documentacao")
+       //navigation.navigate("Documentacao")
     }
     const handleInspecionarClick = async () =>{
-        navigation.navigate("Inspecao")
+        //navigation.navigate("Inspecao")
      }
 
     return (
         <Container>
             <InfoAreaEstabelecimento>
-                <InfoAreaEstabelecimentoText>ESTABELECIMENTO</InfoAreaEstabelecimentoText>
+                <InfoAreaEstabelecimentoText>INFORMAÇÕES</InfoAreaEstabelecimentoText>
                 <InfoCardText>CNPJ/CPF: {useInfo.cnpjcpf}</InfoCardText>
                 <InfoCardText>Representante Legal: {useInfo.representante_legal}</InfoCardText>
                 <InfoCardText>E-mail: {useInfo.email}</InfoCardText>
