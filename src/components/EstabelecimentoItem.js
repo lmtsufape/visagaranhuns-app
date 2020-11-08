@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
 
 const Area = styled.TouchableOpacity`
     background-color:#fff;
@@ -53,8 +54,29 @@ export default ({data}) => {
     let ano = dataInspecao[0];
     let mes = dataInspecao[1];
     let dia = dataInspecao[2];
+
+    const navigation = useNavigation();
+
+    const handleClick = () => {
+        navigation.navigate('PerfilDoEstabelecimento',{
+            inspecao_id: data.inspecao_id,
+            nome: data.empresa_nome,
+            tipo: data.tipo,
+            descricao: data.descricao,
+            bairro:data.bairro,
+            cep: data.cep,
+            cnpjcpf: data.cnpjcpf,
+            numero: data.numero,
+            representante_legal: data.representante_legal,
+            rua: data.rua,
+            email: data.email,
+            telefone1: data.telefone1,
+            telefone2: data.telefone2,
+        });
+    }
+
     return (
-        <Area>
+        <Area onPress={handleClick}>
             <InfoArea>
                 <NomeDoEstabelecimento>{data.empresa_nome}</NomeDoEstabelecimento>
                 <TipoRequerimento>{data.tipo}</TipoRequerimento>

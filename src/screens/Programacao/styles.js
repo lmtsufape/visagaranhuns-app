@@ -10,3 +10,9 @@ export const ListArea = styled.View`
     margin-top:30px;
     margin-bottom:30px;
 `;
+export const LoadingIcon = styled.ActivityIndicator`
+    margin-top:50px;
+`;
+export const Scroller = styled.ScrollView`
+
+`;
