@@ -13,7 +13,7 @@ export const initalState = {
 export const UserReducer = (state, action) => {
     switch(action.type){
         case 'setAvatar':
-            console.log(action.payload.id, action.payload.name, action.payload.email);
+            //console.log(action.payload.id, action.payload.name, action.payload.email);
             return {...state, 
                 id: action.payload.id,
                 name: action.payload.name,
