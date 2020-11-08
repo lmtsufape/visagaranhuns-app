@@ -1,13 +1,14 @@
 import React, {useState} from 'react';
 import { Text } from 'react-native';
 import { Container, InfoAreaEstabelecimentoText, InfoAreaInspecaoText, InfoCardText, InfoAreaEstabelecimento, InfoAreaInspecao, CustomButtonDocumentacao, CustomButtonText, CustomButtonInspecao } from './styles';
-import {useRoute} from '@react-navigation/native';
+import {useRoute, useNavigation} from '@react-navigation/native';
 
 import LocalizarIcon from '../../assets/logo_localizar'
 import PapelIcon from '../../assets/logo_papel'
 
 export default () => {
     const route = useRoute();
+    const navigation = useNavigation();
     const [useInfo] = useState({
         inspecao_id: route.params.inspecao_id,
         nome: route.params.nome,
@@ -26,10 +27,10 @@ export default () => {
 
     });
     const handleDocumentacaoClick = async () =>{
-       //navigation.navigate("Documentacao")
+        navigation.navigate("Documentacao")
     }
     const handleInspecionarClick = async () =>{
-        //navigation.navigate("Inspecao")
+        navigation.navigate("Inspecionar")
      }
 
     return (

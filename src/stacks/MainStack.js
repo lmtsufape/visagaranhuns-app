@@ -7,7 +7,8 @@ import SingUp from '../screens/SingUp';
 import SingIn from '../screens/SingIn';
 import MainStackLogado from './MainStackLogado';
 import PerfilDoEstabelecimento from '../screens/PerfilDoEstabelecimento';
-
+import Documentacao from '../screens/Documentacao';
+import Inspecionar from '../screens/Inspecionar';
 
 
 const Stack = createStackNavigator();
@@ -27,6 +28,18 @@ export default () => (
         <Stack.Screen name="SingIn" component={SingIn}/>
         <Stack.Screen name="MainStackLogado" component={MainStackLogado}/>
         <Stack.Screen name="PerfilDoEstabelecimento" component={PerfilDoEstabelecimento} options={({ route }) => ({ title: route.params.nome, headerShown: true })}/>
+        <Stack.Screen name="Documentacao" 
+            component={Documentacao} 
+            options={{
+                title: "Documentação",
+                headerShown: true, //desabilitar menu principal
+        }}/>
+        <Stack.Screen name="Inspecionar" 
+            component={Inspecionar} 
+            options={{
+                title: "Inspecionar",
+                headerShown: true, //desabilitar menu principal
+        }}/>
     </Stack.Navigator>
 
 );
