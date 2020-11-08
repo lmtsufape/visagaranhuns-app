@@ -21,10 +21,10 @@ export const HeaderArea = styled.View`
 `;
 
 export const HeaderTitleBar = styled.Text`
-marginTop:43px;`;
+    marginTop:43px;`;
 
 export const HeaderOption = styled.Text`
-marginTop:43px;`;
+    marginTop:43px;`;
 
 export const OptionButton = styled.TouchableOpacity`
     width:26px;
@@ -33,42 +33,41 @@ export const OptionButton = styled.TouchableOpacity`
 `;
 
 export const CustomButtonProgramacao = styled.TouchableOpacity`
-    height:90px;
-    background-color: #32cd32;
+    background-color: #D88366;
     border-radius:12px;
-    justify-content:center;
-    align-items:center;
-    marginTop:20px;
+    justify-content:space-between;
+    flex-direction:row
+    padding:25px;
 `;
 export const CustomButtonHistorico = styled.TouchableOpacity`
-    height:90px;
-    background-color: #32cd32;
-    border-radius:12px;
-    justify-content:center;
-    align-items:center;
     marginTop:20px;
+    background-color: #88B6B6;
+    border-radius:12px;
+    justify-content:space-between;
+    flex-direction:row
+    padding:25px;
 `;
 export const CustomButtonAtulizar = styled.TouchableOpacity`
-    height:90px;
-    background-color: #32cd32;
-    border-radius:12px;
-    justify-content:center;
-    align-items:center;
     marginTop:20px;
+    background-color: #E2CF5E;
+    border-radius:12px;
+    justify-content:space-between;
+    flex-direction:row
+    padding:25px;
+`;
+export const CustomButtonExit = styled.TouchableOpacity`
+    marginTop:20px;
+    background-color: #B5CC71;
+    border-radius:12px;
+    justify-content:space-between;
+    flex-direction:row
+    padding:25px;
+
 `;
 export const CustomButtonText = styled.Text`
     font-size:18px;
     color:#fff;
+    margin-top:28px;
 `;
-
-/*
-Scroller,
-HeaderArea,
-HeaderTitle,
-HeaderOption,
-TitlePagina,
-SearchButton,
-*/
-
 
 

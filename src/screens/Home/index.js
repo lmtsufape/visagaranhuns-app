@@ -16,8 +16,12 @@ import {
 
 import ApreentacaoIcon from '../../assets/logo_visagaranhuns_m.svg'
 import OptionIcon from '../../assets/logo_options.svg'
+import ProgramacaoIcon from '../../assets/logo_calendario'
+import HistoricoIcon from '../../assets/logo_historico'
+import AtualizarIcon from '../../assets/logo_atualizar'
+import SairIcon from '../../assets/logo_sair'
 
-import { CustomButtonProgramacao, CustomButtonHistorico, CustomButtonAtulizar, CustomButtonText } from './styles';
+import { CustomButtonProgramacao, CustomButtonHistorico, CustomButtonAtulizar, CustomButtonExit, CustomButtonText } from './styles';
 
 
 export default () => {
@@ -74,16 +78,20 @@ export default () => {
 
                 <CustomButtonProgramacao onPress={handleProgramacaoClick}>
                     <CustomButtonText>Programação</CustomButtonText>
+                    <ProgramacaoIcon width="50" />
                 </CustomButtonProgramacao>
                 <CustomButtonHistorico onPress={handleHistoricoClick}>
                     <CustomButtonText>Histórico</CustomButtonText>
+                    <HistoricoIcon width="50" />
                 </CustomButtonHistorico>
                 <CustomButtonAtulizar>
                     <CustomButtonText>Atualizar</CustomButtonText>
+                    <AtualizarIcon width="50" />
                 </CustomButtonAtulizar>
-                <CustomButtonAtulizar  onPress={handleLogoutClick}>
+                <CustomButtonExit  onPress={handleLogoutClick}>
                     <CustomButtonText>Sair do sistema</CustomButtonText>
-                </CustomButtonAtulizar>
+                    <SairIcon width="50" />
+                </CustomButtonExit>
 
             </Scroller>
         </Container>
