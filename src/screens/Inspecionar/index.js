@@ -1,10 +1,19 @@
 import React from 'react';
-import { Container } from './styles';
+import { Container, InfoArea, InfoText, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText } from './styles';
 import { Text } from 'react-native';
 export default() => {
     return(
         <Container>
-            <Text>Inspecionar</Text>
+            <InfoArea>
+                <InfoText>Câmera</InfoText>
+                <CustomButtonTirarFoto>
+                    <CustomButtonText>Tirar foto</CustomButtonText>
+                </CustomButtonTirarFoto>
+                <CustomButtonGaleria>
+                    <CustomButtonText>Abrir galeria</CustomButtonText>
+                </CustomButtonGaleria>
+            </InfoArea>
+            <Text>Imagens</Text>
         </Container>
     );
 }
