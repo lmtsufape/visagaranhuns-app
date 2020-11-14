@@ -49,11 +49,12 @@ export default {
     },
     //funcao para enviar uma imagem
     setImg: async (image,inspecao_id) => {
-        console.log(image);
+        //console.log(image.exif["Orientation"]);
         let body = new FormData();
         body.append('photo', {uri: image.path, name: 'photo.png',filename :'imageName.jpeg',type: image.mime});
         body.append('Content-Type', 'image/jpeg');
         body.append('id', inspecao_id);
+        body.append('orientation', image.exif["Orientation"]);
 
         fetch(`${BASE_API}/api/save/img?json=true`,{ method: 'POST',headers:{  
             "Content-Type": "multipart/form-data",
