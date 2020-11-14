@@ -38,16 +38,18 @@ export default () => {
     return (
         <Container>
             <InfoAreaEstabelecimento>
-                <InfoAreaEstabelecimentoText>INFORMAÇÕES</InfoAreaEstabelecimentoText>
+                <InfoAreaEstabelecimentoText>{useInfo.nome.toUpperCase()}</InfoAreaEstabelecimentoText>
                 <InfoCardText>CNPJ/CPF: {useInfo.cnpjcpf}</InfoCardText>
                 <InfoCardText>Representante Legal: {useInfo.representante_legal}</InfoCardText>
+
+                <InfoAreaEstabelecimentoText>Contato</InfoAreaEstabelecimentoText>
                 <InfoCardText>E-mail: {useInfo.email}</InfoCardText>
                 <InfoCardText>Telefone 1: {useInfo.telefone1}</InfoCardText>
                 {useInfo.telefone2 
                     ? <InfoCardText>Telefone 2: {useInfo.telefone2}</InfoCardText>  
                     : <InfoCardText></InfoCardText> 
                 }
-                <InfoAreaEstabelecimentoText>ENDEREÇO</InfoAreaEstabelecimentoText>
+                <InfoAreaEstabelecimentoText>Endereço</InfoAreaEstabelecimentoText>
                 <InfoCardText>Bairro: {useInfo.bairro}</InfoCardText>
                 <InfoCardText>Rua: {useInfo.rua} - Nº: {useInfo.numero}</InfoCardText>
                 <InfoCardText>CEP: {useInfo.cep}</InfoCardText>

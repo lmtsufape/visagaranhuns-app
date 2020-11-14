@@ -19,8 +19,10 @@ const InfoArea = styled.View`
     justify-content:space-between;
 `;
 const NomeDoEstabelecimento = styled.Text`
-    font-size:17px;
-    font-weight:bold;
+    marginTop:10px;
+    fontWeight:bold;
+    fontSize:18px;
+    marginBottom:5px;
 `;
 const TipoRequerimento = styled.Text`
     font-size:14px;
@@ -78,7 +80,7 @@ export default ({data}) => {
     return (
         <Area onPress={handleClick}>
             <InfoArea>
-                <NomeDoEstabelecimento>{data.empresa_nome}</NomeDoEstabelecimento>
+                <NomeDoEstabelecimento>{data.empresa_nome.toUpperCase()}</NomeDoEstabelecimento>
                 <TipoRequerimento>{data.tipo}</TipoRequerimento>
                 <DescricaoCnae numberOfLines={1}>{data.descricao.length < 50
                     ? `${data.descricao}` : `${data.descricao.substring(0,48)}...`
