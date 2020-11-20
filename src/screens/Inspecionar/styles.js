@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 export const Container = styled.ScrollView`
-    flex:1;
-    flexDirection:column;
+    
     padding:20px;
 `;
 export const InfoArea = styled.View`
@@ -45,4 +44,11 @@ export const InfoText = styled.Text`
     color:black;
     font-weight:bold;
     textAlign:center;
+`;
+export const LoadingIcon = styled.ActivityIndicator`
+    margin-top:50px;
+`;
+export const ListArea = styled.View`
+    flex:1;
+    flexDirection:column;
 `;

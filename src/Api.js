@@ -66,21 +66,33 @@ export default {
          .catch((e) => console.log(e))
          .done()
 
+    },
+    /*
+    * FUNCAO: funcao para capturar as imagens já enviadas para o sistema
+    * ENTRADA: inspecao_id
+    * SAIDA: lista de imagens
+    */
+   getImg: async (inspecao_id) => {
+    const req = await fetch(`${BASE_API}/api/donwload/img?json=true`,
+    {
+        method:'POST',
+        headers:{
+            Acenpt: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({inspecao_id})
+    });
+    
+    const json = await req.json();
+    return json;
+   },
+   /*
+    * FUNCAO: funcao para capturar os documentos por cnae
+    * ENTRADA: inspecao_id
+    * SAIDA: lista de imagens
+    */
+   getDoc: async (inspecao_id) => {
+       return 9;
+   }
 
-        /*//console.log(image);
-        let fd = new FormData();
-        fd.append('file', image);
-
-        //console.log(image);
-        const req = await fetch(`${BASE_API}/api/save/img?json=true`,
-        {
-            method:'POST',
-            headers:{
-                Acenpt: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({inspecao_id})
-        });
-        */
-    }
 }

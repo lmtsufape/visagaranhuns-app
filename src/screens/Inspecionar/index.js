@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import { Container, InfoArea, InfoText, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText } from './styles';
+import React, { useState, useEffect } from 'react';
+import { Container, InfoArea, InfoText, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText, LoadingIcon, ListArea } from './styles';
 import { Text, Alert, Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useRoute} from '@react-navigation/native';
 import Api from '../../Api';
+import ImagemItem from '../../components/ImagemItem';
 
 export default() => {
     const route = useRoute();
     const [useInfo] = useState({
         inspecao_id: route.params.inspecao_id,
     });
-    
+    const [list, setList] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(null);
     const [images, setImages] = useState(null);
 
@@ -36,22 +38,22 @@ export default() => {
         .then((image) => {
            // console.log('received image', image);
             sendImg(image);
-            /*setImage({
-                    uri:image.path,
-                    width:image.width,
-                    height:image.height,
-                    mime:image.mime,
-            })
-            setImages(null)
-            */
         })
-        .catch((e) => alert(e));
+        .catch((e) => console.log(e));
 
     }
     //enviar para API
     const sendImg  = (image) => {
         Api.setImg(image, useInfo.inspecao_id);
     }
+    const getImg = async () => {
+        setList([]);
+        let res = await Api.getImg(useInfo.inspecao_id);
+        setList(res.table_data);
+    }
+    useEffect(()=>{
+        getImg();
+    },[]);
     return(
         <Container>
             <InfoArea>
@@ -63,7 +65,14 @@ export default() => {
                     <CustomButtonText>Abrir galeria</CustomButtonText>
                 </CustomButtonGaleria>
             </InfoArea>
-        
+            {loading &&
+                <LoadingIcon size="large" color="#909090"/>
+            }
+            <ListArea>
+                {list.map((item,k) => (
+                    <ImagemItem key={k} data={item}/>
+                ))}
+            </ListArea>
             
         </Container>
     );

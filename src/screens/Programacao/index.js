@@ -38,7 +38,6 @@ export default () => {
     const onRefresh = () =>{
         setRefreshing(false);
         getInspecoes();
-
     }
 
     return (
