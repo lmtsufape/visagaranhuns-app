@@ -22,13 +22,16 @@ export default() => {
             if(json.success == 'true'){
                 //armazeno o token
                 await AsyncStorage.setItem('token', json.token);
+                await AsyncStorage.setItem('user', JSON.stringify(json.table_data));
+                await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));
+                await AsyncStorage.setItem('documentos', JSON.stringify(json.documentos));
                 //armazeno os dados o usuario logado
                 userDispatch({
                     type:'setAvatar',
                     payload:{
                         id:json.table_data[0].id,
                         name:json.table_data[0].name,
-                        email:json.table_data[0].email,
+                        email:json.table_data[0].email
                     }
                 })      
                 navigation.reset({

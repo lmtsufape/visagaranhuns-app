@@ -27,7 +27,9 @@ export default () => {
 
     });
     const handleDocumentacaoClick = async () =>{
-        navigation.navigate("Documentacao")
+        navigation.navigate("Documentacao",{
+            inspecao_id: route.params.inspecao_id,
+        })
     }
     const handleInspecionarClick = async () =>{
         navigation.navigate("Inspecionar",{

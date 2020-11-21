@@ -72,7 +72,7 @@ export default {
     * ENTRADA: inspecao_id
     * SAIDA: lista de imagens
     */
-   getImg: async (inspecao_id) => {
+    getImg: async (inspecao_id) => {
     const req = await fetch(`${BASE_API}/api/donwload/img?json=true`,
     {
         method:'POST',
