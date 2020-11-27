@@ -13,19 +13,15 @@ export default() => {
     const [useInfo] = useState({
         inspecao_id: route.params.inspecao_id,
     });
-
     const getDocumentos = async () => {
+        //console.log(route.params.listaDocumentos);
         setList([]);
         const documentos = await AsyncStorage.getItem('documentos');
+        const inspecoes = await AsyncStorage.getItem('inspecoes');
         //console.log(JSON.parse(documentos).length)
-        let cont = 0;
-        for(let i = 0; i < JSON.parse(documentos).length; i++){
-            if(JSON.parse(documentos)[i].inspecao_id === useInfo.inspecao_id){
-                setList(JSON.parse(documentos));
-            }
-            cont=cont+1;
-        }
-        if(cont == JSON.parse(documentos).length){
+        //console.log(JSON.parse(inspecoes)[0].listaDocumentos);
+        setList(route.params.listaDocumentos);
+        if(route.params.listaDocumentos.length >0){
             setLoading(false);
         }
     }

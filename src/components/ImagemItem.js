@@ -13,15 +13,16 @@ const Foto = styled.Image`
     margin:5px;
 `;
 const handleClick = () => {
-    console.log("OPAA");
+    //console.log("OPAA");
 }
 
 //1 e 3 | 6 e 8
 export default ({data}) => {
+    console.log(data);
     const base = 'http://192.168.0.106';
     return(
         <Area onPress={handleClick}>
-            <Foto source={{uri: base+'/imagens/inspecoes/'+data.imagemInspecao}}/>
+            <Foto source={{uri: 'data:image/jpeg;base64,' + data}}/>
         </Area>
     );
 }

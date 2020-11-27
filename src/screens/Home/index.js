@@ -69,23 +69,16 @@ export default () => {
                     <HeaderTitleBar>
                         <ApreentacaoIcon width="220"/>
                     </HeaderTitleBar>
-                    <HeaderOption>
-                        <OptionButton onPress={()=>alert("OPA")}>
-                            <OptionIcon width="25"/>
-                        </OptionButton>
-                    </HeaderOption>
+                    
                 </HeaderArea>
 
                 <CustomButtonProgramacao onPress={handleProgramacaoClick}>
                     <CustomButtonText>Programação</CustomButtonText>
                     <ProgramacaoIcon width="50" />
                 </CustomButtonProgramacao>
-                <CustomButtonHistorico onPress={handleHistoricoClick}>
-                    <CustomButtonText>Histórico</CustomButtonText>
-                    <HistoricoIcon width="50" />
-                </CustomButtonHistorico>
+                
                 <CustomButtonAtulizar>
-                    <CustomButtonText>Atualizar</CustomButtonText>
+                    <CustomButtonText>Sincronizar</CustomButtonText>
                     <AtualizarIcon width="50" />
                 </CustomButtonAtulizar>
                 <CustomButtonExit  onPress={handleLogoutClick}>

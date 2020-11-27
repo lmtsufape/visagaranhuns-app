@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import Api from '../Api';
 
 const Area = styled.TouchableOpacity`
     background-color:#fff;
@@ -57,19 +58,16 @@ export default ({data}) => {
     let mes_dataEmissoa = dataEmissao[1];
     let dia_dataEmissoa = dataEmissao[2];
 
+    let ano_dataValidade = '';
+    let mes_dataValidade = '';
+    let dia_dataValidade = '';
+
     if( data.data_validade != null){
         let dataValidade = data.data_validade.split('-');
-        let ano_dataValidade = dataValidade[0];
-        let mes_dataValidade = dataValidade[1];
-        let dia_dataValidade = dataValidade[2];
-    }else{
-        let ano_dataValidade = '';
-        let mes_dataValidade = '';
-        let dia_dataValidade = '';
+        ano_dataValidade = dataValidade[0];
+        mes_dataValidade = dataValidade[1];
+        dia_dataValidade = dataValidade[2];
     }
-
-    
-
     const navigation = useNavigation();
 
     const handleClick = () => {
@@ -89,9 +87,14 @@ export default ({data}) => {
             telefone2: data.telefone2,
         });
     }
+    const handleClickPDF = async () => {
+        Api.getDoc(data.caminho);
+        //console.log(data.caminho);
+       
+    }
 
     return (
-        <Area>
+        <Area onPress={handleClickPDF}>
             <InfoArea>
                 <NomeDoEstabelecimento>{data.nome}</NomeDoEstabelecimento>
                 {data.data_validade 

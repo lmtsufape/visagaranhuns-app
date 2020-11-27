@@ -24,12 +24,14 @@ export default () => {
         numero: route.params.numero,
         representante_legal: route.params.representante_legal,
         rua: route.params.rua,
-
+        listaDocumentos: route.params.listaDocumentos,
     });
     const handleDocumentacaoClick = async () =>{
         navigation.navigate("Documentacao",{
             inspecao_id: route.params.inspecao_id,
+            listaDocumentos: useInfo.listaDocumentos,
         })
+        //console.log(useInfo.listaDocumentos);
     }
     const handleInspecionarClick = async () =>{
         navigation.navigate("Inspecionar",{

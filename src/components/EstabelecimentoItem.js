@@ -74,9 +74,11 @@ export default ({data}) => {
             email: data.email,
             telefone1: data.telefone1,
             telefone2: data.telefone2,
+            listaDocumentos: data.listaDocumentos,
+            listaImagens: data.listaImagens,
         });
     }
-
+    //console.log(data.empresa_nome);
     return (
         <Area onPress={handleClick}>
             <InfoArea>

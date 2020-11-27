@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
+import { Alert, Button, Linking, StyleSheet, View } from "react-native";
+
 
 const BASE_API = 'http://192.168.0.106'; //garanhuns
 //const BASE_API = 'http://192.168.15.10'; //recife
@@ -91,8 +93,27 @@ export default {
     * ENTRADA: inspecao_id
     * SAIDA: lista de imagens
     */
-   getDoc: async (inspecao_id) => {
-       return 9;
-   }
+    getDoc: async (caminho) => {
+        Linking.canOpenURL(`${BASE_API}/api/donwload/img/pdf?caminho=`+caminho).then(supported => {
+          if (supported) {
+            Linking.openURL(`${BASE_API}/api/donwload/img/pdf?caminho=`+caminho);
+          } else {
+            console.log("Deu erro no link, tente novamente!");
+          }
+        });
+        /*const req = await fetch(`${BASE_API}/api/donwload/img/pdf?json=true`,
+        {
+            method:'GET',
+            headers:{
+                Acenpt: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({caminho})
+        });
+        
+        const json = await req.json();
+        return json;
+        */
+    }
 
 }

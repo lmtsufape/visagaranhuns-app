@@ -24,7 +24,7 @@ export default() => {
                 await AsyncStorage.setItem('token', json.token);
                 await AsyncStorage.setItem('user', JSON.stringify(json.table_data));
                 await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));
-                await AsyncStorage.setItem('documentos', JSON.stringify(json.documentos));
+                //console.log(json.inspecoes[0].listaDocumentos)
                 //armazeno os dados o usuario logado
                 userDispatch({
                     type:'setAvatar',
