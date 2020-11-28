@@ -69,7 +69,7 @@ export default() => {
                 //armazeno o token
                 await AsyncStorage.setItem('token', json.token);
                 await AsyncStorage.setItem('user', JSON.stringify(json.table_data));
-                await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));
+                //await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));
                 //console.log(json.inspecoes[0].listaDocumentos)
                 //armazeno os dados o usuario logado
                 //console.log(json.inspecoes.length);
@@ -82,6 +82,7 @@ export default() => {
                         saveDocumeto(doc);
                     });
                 });
+                await AsyncStorage.setItem('sincronia', 'true');
 
                 /*
                 const realm = await getRealm();

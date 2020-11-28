@@ -6,6 +6,7 @@ import {useRoute} from '@react-navigation/native';
 import Api from '../../Api';
 import ImagemItem from '../../components/ImagemItem';
 import AsyncStorage from '@react-native-community/async-storage';
+import getRealm from '../../services/realm';
 
 export default() => {
     const route = useRoute();
@@ -39,7 +40,8 @@ export default() => {
         })
         .then((image) => {
            // console.log('received image', image);
-            sendImg(image);
+            //sendImg(image);
+            saveImgDB(image.path);
         })
         .catch((e) => console.log(e));
 
@@ -53,12 +55,39 @@ export default() => {
         .then((image) => {
            // console.log('received image', image);
             //sendImg(image);
-            console.log(image.path);
-            setTempImagem(image.path);
+            //console.log(image.path);
+            //setTempImagem(image.path);
+            saveImgDB(image.path);
         })
         .catch((e) => console.log(e));
 
     }
+    //salvar no banco de dados
+    const saveImgDB = async (image) => {
+        const realm = await getRealm();
+        realm.write(() => {
+            const img = realm.create('Imagens', {
+                inspecao_id:  useInfo.inspecao_id,
+                path: image,
+                status: 'false',
+                comentario: '',
+            });
+        });
+        await AsyncStorage.setItem('sincronia', 'false');
+    }
+    const mostrar = async() => {
+        const realm = await getRealm();
+        const teste = realm.objects('Imagens').filtered('inspecao_id == '+useInfo.inspecao_id);
+        //console.log("saveImgDB", teste.length);
+        teste.forEach(obj => {
+            console.log("saveImgDB", obj.inspecao_id, obj.path,  obj.status, obj.comentario);
+        });
+
+        const sincronia = await AsyncStorage.getItem('sincronia');
+        console.log(sincronia);
+
+    }
+
     //enviar para API
     const sendImg  = (image) => {
         console.log(image.path);
@@ -85,7 +114,8 @@ export default() => {
         return JSON.parse(inspecoes)[insp].listaImagens;
     }
     useEffect(()=>{
-        getImg();
+        mostrar();
+        //getImg();
         //console.log(route.params);
         //console.log("antes:",inspecoes);
         //pego os dados atuais e jogo no setState

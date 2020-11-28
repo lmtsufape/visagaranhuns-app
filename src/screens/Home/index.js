@@ -1,6 +1,6 @@
 import { HeaderTitle } from '@react-navigation/stack';
 import React,{ useContext } from 'react';
-import { Text, Header } from 'react-native';
+import { Text, Header,Alert  } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { UserContext } from '../../contexts/UserContext';
 import { useNavigation } from '@react-navigation/native';
@@ -63,6 +63,40 @@ export default () => {
                 routes:[{name:'SingIn'}]
             })
     }
+    const handleSincronizarClick = async () => {
+        const sincronia = await AsyncStorage.getItem('sincronia');
+        if(sincronia == 'true'){
+            Alert.alert(
+                'Sincronizar',
+                'Seus dados estão sincronizados!',
+                [
+                  {
+                    text: 'Ok',
+                    onPress: () => console.log('Ok Pressed'),
+                    style: 'cancel'
+                  },
+                ],
+                { cancelable: false }
+            );
+        }else{
+            Alert.alert(
+                'Sincronizar',
+                'Deseja sincronizar os dados?',
+                [
+                  {
+                    text: 'Não',
+                    style: 'cancel'
+                  },
+                  { text: 'Sim', onPress: () => verificaNet() }
+                ],
+                { cancelable: false }
+            );
+        }
+    }
+    const verificaNet =  async() => {
+        
+            alert("teste");
+    }
 
 
     return (
@@ -81,7 +115,7 @@ export default () => {
                     <ProgramacaoIcon width="50" />
                 </CustomButtonProgramacao>
                 
-                <CustomButtonAtulizar>
+                <CustomButtonAtulizar onPress={handleSincronizarClick}>
                     <CustomButtonText>Sincronizar</CustomButtonText>
                     <AtualizarIcon width="50" />
                 </CustomButtonAtulizar>

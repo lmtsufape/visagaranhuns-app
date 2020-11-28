@@ -8,8 +8,8 @@ export const initalState = {
     id:'',
     name:'',
     email:'',
-    inspecoes: [],
     imagens: [],
+    sincronia:'',
 };
 
 export const UserReducer = (state, action) => {
@@ -20,7 +20,6 @@ export const UserReducer = (state, action) => {
                 id: action.payload.id,
                 name: action.payload.name,
                 email: action.payload.email,
-                inspecoes: action.payload.inspecoes,
             };
         default:
             return state;
