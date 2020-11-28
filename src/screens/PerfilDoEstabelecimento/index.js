@@ -24,12 +24,10 @@ export default () => {
         numero: route.params.numero,
         representante_legal: route.params.representante_legal,
         rua: route.params.rua,
-        listaDocumentos: route.params.listaDocumentos,
     });
     const handleDocumentacaoClick = async () =>{
         navigation.navigate("Documentacao",{
             inspecao_id: route.params.inspecao_id,
-            listaDocumentos: useInfo.listaDocumentos,
         })
         //console.log(useInfo.listaDocumentos);
     }
@@ -49,7 +47,7 @@ export default () => {
                 <InfoAreaEstabelecimentoText>Contato</InfoAreaEstabelecimentoText>
                 <InfoCardText>E-mail: {useInfo.email}</InfoCardText>
                 <InfoCardText>Telefone 1: {useInfo.telefone1}</InfoCardText>
-                {useInfo.telefone2 
+                {useInfo.telefone2 != "null"
                     ? <InfoCardText>Telefone 2: {useInfo.telefone2}</InfoCardText>  
                     : <InfoCardText></InfoCardText> 
                 }

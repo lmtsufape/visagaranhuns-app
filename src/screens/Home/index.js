@@ -20,7 +20,7 @@ import ProgramacaoIcon from '../../assets/logo_calendario'
 import HistoricoIcon from '../../assets/logo_historico'
 import AtualizarIcon from '../../assets/logo_atualizar'
 import SairIcon from '../../assets/logo_sair'
-
+import getRealm from '../../services/realm';
 import { CustomButtonProgramacao, CustomButtonHistorico, CustomButtonAtulizar, CustomButtonExit, CustomButtonText } from './styles';
 
 
@@ -54,7 +54,11 @@ export default () => {
                     name:novoName,
                     email:novoEmail,
                 }
-            })     
+            })    
+            
+            const realm = await getRealm();
+            realm.write(() => {realm.deleteAll()});
+
             navigation.reset({
                 routes:[{name:'SingIn'}]
             })

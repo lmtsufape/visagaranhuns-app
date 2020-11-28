@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import DocumentoItem from '../../components/DocumentoItem';
 import {useRoute} from '@react-navigation/native';
+import getRealm from '../../services/realm';
 
 
 export default() => {
@@ -16,12 +17,16 @@ export default() => {
     const getDocumentos = async () => {
         //console.log(route.params.listaDocumentos);
         setList([]);
-        const documentos = await AsyncStorage.getItem('documentos');
-        const inspecoes = await AsyncStorage.getItem('inspecoes');
+        //const documentos = await AsyncStorage.getItem('documentos');
+        //const inspecoes = await AsyncStorage.getItem('inspecoes');
         //console.log(JSON.parse(documentos).length)
         //console.log(JSON.parse(inspecoes)[0].listaDocumentos);
-        setList(route.params.listaDocumentos);
-        if(route.params.listaDocumentos.length >0){
+        const realm = await getRealm();
+        const documentos = realm.objects('Documentos').filtered('inspecao_id == '+useInfo.inspecao_id);
+        setList(documentos)
+        console.log(useInfo.inspecao_id);
+        //setList(route.params.listaDocumentos);
+        if(documentos.length >0){
             setLoading(false);
         }
     }

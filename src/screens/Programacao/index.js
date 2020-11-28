@@ -16,6 +16,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 
 import EstabelecimentoItem from '../../components/EstabelecimentoItem';
+import getRealm from '../../services/realm';
 
 export default () => {
     const { state:user } = useContext(UserContext);
@@ -23,12 +24,15 @@ export default () => {
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
+    
+    //console.log(inspecao[1].empresa_nome);
+
     const getInspecoes = async () => {
-        const userAS = await AsyncStorage.getItem('inspecoes');
+            //const userAS = await AsyncStorage.getItem('inspecoes');
         //const userASd = await AsyncStorage.getItem('documentos');
         //console.log(JSON.parse(userAS));
-        setList([]);
-        setList(JSON.parse(userAS));
+            //setList([]);
+            //setList(JSON.parse(userAS));
         //setList(user.inspecoes);
         /*let res = await Api.getInspecoes();
         if(res.success == 'true'){
@@ -38,6 +42,12 @@ export default () => {
             alert("Error: Verifique sua conexão e tente novamente!");
         }
         */
+        const realm = await getRealm();
+        const inspecao = realm.objects('Inspecoes');
+        setList([]);
+        setList(inspecao);
+
+
     }
     useEffect(()=>{
         getInspecoes();

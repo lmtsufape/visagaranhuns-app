@@ -62,7 +62,7 @@ export default ({data}) => {
     let mes_dataValidade = '';
     let dia_dataValidade = '';
 
-    if( data.data_validade != null){
+    if( data.data_validade != "null"){
         let dataValidade = data.data_validade.split('-');
         ano_dataValidade = dataValidade[0];
         mes_dataValidade = dataValidade[1];
@@ -97,7 +97,7 @@ export default ({data}) => {
         <Area onPress={handleClickPDF}>
             <InfoArea>
                 <NomeDoEstabelecimento>{data.nome}</NomeDoEstabelecimento>
-                {data.data_validade 
+                {data.data_validade != "null"
                     ? <TipoRequerimento>{dia_dataEmissoa}/{mes_dataEmissoa}/{ano_dataEmissoa} - {dia_dataValidade}/{mes_dataValidade}/{ano_dataValidade}</TipoRequerimento>
                     : <TipoRequerimento>{dia_dataEmissoa}/{mes_dataEmissoa}/{ano_dataEmissoa}</TipoRequerimento>
                 }
