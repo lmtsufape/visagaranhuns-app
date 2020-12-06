@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Container, InfoArea, InfoText, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText, LoadingIcon, ListArea } from './styles';
-import { Text, Alert, Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Container, InfoArea, InfoText, ContainerButton, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText, LoadingIcon, ListArea } from './styles';
+import { Text, Alert, Image, ScrollView, StyleSheet, TouchableOpacity, View, FlatList, Dimensions, ImageComponent } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useRoute} from '@react-navigation/native';
 import Api from '../../Api';
-import ImagemItem from '../../components/ImagemItem';
 import AsyncStorage from '@react-native-community/async-storage';
 import getRealm from '../../services/realm';
+import { useNavigation } from '@react-navigation/native';
+
+const numColumns=3;
+const WIDTH = Dimensions.get('window').width;
 
 export default() => {
+    const navigation = useNavigation();
     const route = useRoute();
     const [useInfo] = useState({
         inspecao_id: route.params.inspecao_id,
@@ -19,16 +23,11 @@ export default() => {
     const [images, setImages] = useState(null);
     const [tempimagem, setTempImagem] = useState('')
 
-    const renderAsset = (image) => {
-        return renderImage(image);
-    }
-    const renderImage = (image) => {
-        return (
-            <Image
-                style={{width:100, height:100, resizeMode:'contain', backgroundColor:'red'}}
-                source={{image}}
-            />
-        );
+    const renderAsset = async () => {
+        setList([]);
+        const realm = await getRealm();
+        const imagens = realm.objects('Imagens').filtered('inspecao_id == '+useInfo.inspecao_id);
+        setList(imagens);
     }
     const pickSingWithCamera = async (cropping, mediaType = 'photo') => {
         ImagePicker.openCamera({
@@ -41,7 +40,7 @@ export default() => {
         .then((image) => {
            // console.log('received image', image);
             //sendImg(image);
-            saveImgDB(image.path);
+            saveImgDB(image);
         })
         .catch((e) => console.log(e));
 
@@ -57,7 +56,7 @@ export default() => {
             //sendImg(image);
             //console.log(image.path);
             //setTempImagem(image.path);
-            saveImgDB(image.path);
+            saveImgDB(image);
         })
         .catch((e) => console.log(e));
 
@@ -68,38 +67,34 @@ export default() => {
         realm.write(() => {
             const img = realm.create('Imagens', {
                 inspecao_id:  useInfo.inspecao_id,
-                path: image,
+                path: image.path,
                 status: 'false',
                 comentario: '',
+                nome: 'imagem'+Math.random()+1,
+                orientation: image.orientation,
             });
         });
         await AsyncStorage.setItem('sincronia', 'false');
+        renderAsset();
     }
     const mostrar = async() => {
         const realm = await getRealm();
         const teste = realm.objects('Imagens').filtered('inspecao_id == '+useInfo.inspecao_id);
-        //console.log("saveImgDB", teste.length);
+        //console.log("quantidade: ", teste.length);
         teste.forEach(obj => {
-            console.log("saveImgDB", obj.inspecao_id, obj.path,  obj.status, obj.comentario);
+            console.log("mostrar:",obj.id, obj.inspecao_id, obj.path,  obj.status, obj.comentario);
         });
 
-        const sincronia = await AsyncStorage.getItem('sincronia');
-        console.log(sincronia);
+        //const sincronia = await AsyncStorage.getItem('sincronia');
+        //console.log(sincronia);
 
     }
-
     //enviar para API
     const sendImg  = (image) => {
         console.log(image.path);
         Api.setImg(image, useInfo.inspecao_id);
     }
     const getImg = async () => {
-        //setList(tempimagem);
-        //let res = await Api.getImg(useInfo.inspecao_id);
-        //setList(res.table_data);
-        //console.log("ID_INSPECAO:",useInfo.inspecao_id);
-        //const inspecoes = await AsyncStorage.getItem('inspecoes');
-        //console.log(JSON.parse(inspecoes));
         setImg(useInfo.inspecao_id);
     }
     const setImg = async (id_inspecao) => {
@@ -108,48 +103,70 @@ export default() => {
         console.log('ANTES:',JSON.parse(inspecoes)[insp].listaImagens, JSON.parse(inspecoes)[insp].empresa_nome);
         //await AsyncStorage.setItem('inspecoes', JSON.stringify({age: 36 }));
         console.log('DEPOIS:',JSON.parse(inspecoes)[insp].listaImagens, JSON.parse(inspecoes)[insp].empresa_nome);
-        //console.log('GERAL:',JSON.parse(inspecoes)[insp]);
-        //console.log(JSON.parse(inspecoes));
-        //const teste = inspecoes;
         return JSON.parse(inspecoes)[insp].listaImagens;
     }
     useEffect(()=>{
-        mostrar();
-        //getImg();
-        //console.log(route.params);
-        //console.log("antes:",inspecoes);
-        //pego os dados atuais e jogo no setState
-        //se tiver uma modificação eu altero o setState e depois atualizo o route
-              
+        //mostrar();
+        renderAsset();
     },[]);
+    const renderItem2 = ({ item }) => (
+        <Item item={item}/>
+    );
+    const Item = ({ item }) => (
+        <TouchableOpacity style={styles.item} onPress={() => handleClickImagem(item)}>
+            <Image
+                style={styles.tinyLogo}
+                source={{uri: item.path}}
+            />
+        </TouchableOpacity>
+    );
+    const handleClickImagem = async (item) => {
+        navigation.navigate('Imagem',{
+            inspecao_id: useInfo.inspecao_id,
+            path: item.path,
+            comentario: item.comentario,
+            status: item.status,
+        });
+    }
     return(
         <Container>
             <InfoArea>
-                <InfoText>Câmera</InfoText>
-                <CustomButtonTirarFoto onPress={() => pickSingWithCamera(false)}>
-                    <CustomButtonText>Fotografar</CustomButtonText>
-                </CustomButtonTirarFoto>
-                <CustomButtonGaleria onPress={() => pickSingWithGalery(false)}>
-                    <CustomButtonText>Abrir galeria</CustomButtonText>
-                </CustomButtonGaleria>
+                <ContainerButton>
+                    <CustomButtonTirarFoto onPress={() => pickSingWithCamera(false)}>
+                        <CustomButtonText>Fotografar</CustomButtonText>
+                    </CustomButtonTirarFoto>
+                    <CustomButtonGaleria onPress={() => pickSingWithGalery(false)}>
+                        <CustomButtonText>Abrir galeria</CustomButtonText>
+                    </CustomButtonGaleria>
+                </ContainerButton>
             </InfoArea>
             {loading &&
                 <LoadingIcon size="large" color="#909090"/>
             }
-            <ListArea>
-                {list.map((item,k) => (
-                    <ImagemItem key={k} data={item}/>
-                ))}
-            </ListArea>
-            
+            <FlatList
+                data={list}
+                renderItem={renderItem2}
+                numColumns={3}
+                keyExtractor={(item, index) => index.toString()}
+            />
         </Container>
     );
 }
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        justifyContent:'center',
-        alignItems:'center',
+    item: {
+      alignItems: "center",
+      backgroundColor: "#dcda48",
+      justifyContent:'center',
+      height:WIDTH/numColumns,
+      width:WIDTH/numColumns,
+      margin:1,
     },
-});
+    title: {
+      fontSize: 20,
+    },
+    tinyLogo:{
+        width: WIDTH/numColumns,
+        height: WIDTH/numColumns,
+    }
+  });

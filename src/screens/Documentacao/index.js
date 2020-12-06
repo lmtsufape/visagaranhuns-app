@@ -24,7 +24,7 @@ export default() => {
         const realm = await getRealm();
         const documentos = realm.objects('Documentos').filtered('inspecao_id == '+useInfo.inspecao_id);
         setList(documentos)
-        console.log(useInfo.inspecao_id);
+        //console.log(useInfo.inspecao_id);
         //setList(route.params.listaDocumentos);
         if(documentos.length >0){
             setLoading(false);

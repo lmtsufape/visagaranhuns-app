@@ -13,10 +13,10 @@ import {
     ListArea,
     LoadingIcon,
 } from './styles';
+import getRealm from '../../services/realm';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import EstabelecimentoItem from '../../components/EstabelecimentoItem';
-import getRealm from '../../services/realm';
 
 export default () => {
     const { state:user } = useContext(UserContext);
@@ -24,38 +24,17 @@ export default () => {
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-    
-    //console.log(inspecao[1].empresa_nome);
-
     const getInspecoes = async () => {
-            //const userAS = await AsyncStorage.getItem('inspecoes');
-        //const userASd = await AsyncStorage.getItem('documentos');
-        //console.log(JSON.parse(userAS));
-            //setList([]);
-            //setList(JSON.parse(userAS));
-        //setList(user.inspecoes);
-        /*let res = await Api.getInspecoes();
-        if(res.success == 'true'){
-            setList(res.table_data);
-            //console.log(res.table_data);
-        }else{
-            alert("Error: Verifique sua conexão e tente novamente!");
-        }
-        */
         const realm = await getRealm();
-        const inspecao = realm.objects('Inspecoes');
+        const inspecoes = realm.objects('Inspecoes');
         setList([]);
-        setList(inspecao);
-
-
+        setList(inspecoes);
     }
     useEffect(()=>{
         getInspecoes();
     },[]);
 
     const onRefresh = () =>{
-        //setRefreshing(false);
-        //getInspecoes();
     }
 
     return (

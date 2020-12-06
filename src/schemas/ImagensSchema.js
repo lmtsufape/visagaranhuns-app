@@ -4,8 +4,10 @@ export default class ImagensSchema{
         properties: {
             inspecao_id:  'int',
             path: 'string',
+            nome: 'string',
             status: 'string',
-            comentario: 'string',
+            comentario: {type: 'string', default: ""},
+            orientation: {type: 'int', default: 6},
         }
     }
 }

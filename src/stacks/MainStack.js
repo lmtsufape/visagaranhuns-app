@@ -9,6 +9,7 @@ import MainStackLogado from './MainStackLogado';
 import PerfilDoEstabelecimento from '../screens/PerfilDoEstabelecimento';
 import Documentacao from '../screens/Documentacao';
 import Inspecionar from '../screens/Inspecionar';
+import Imagem from '../screens/Imagem';
 
 
 const Stack = createStackNavigator();
@@ -38,6 +39,12 @@ export default () => (
             component={Inspecionar} 
             options={{
                 title: "Inspecionar",
+                headerShown: true, //desabilitar menu principal
+        }}/>
+        <Stack.Screen name="Imagem" 
+            component={Imagem} 
+            options={{
+                title: "Imagem",
                 headerShown: true, //desabilitar menu principal
         }}/>
     </Stack.Navigator>

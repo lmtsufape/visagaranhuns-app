@@ -42,7 +42,7 @@ export default() => {
                 descricao: value.descricao,
             });
           });
-          console.log("saveInspecao");
+          //console.log("saveInspecao");
     }
     const saveDocumeto = async(value) => {
         let data_validadeTemp='';
@@ -59,7 +59,22 @@ export default() => {
                 data_validade: data_validadeTemp,
             });
         });
-        console.log("saveDocumento");
+        //console.log("saveDocumento");
+    }
+    const saveImagem = async(value) => {
+        //baixo a imagem pela API
+        let json = await Api.getImgURL(value.imagemInspecao, value.nome);
+        //atualizo o banco de dados com a imagem salva
+        const realm = await getRealm();
+        realm.write(() => {
+            const imagem = realm.create('Imagens', {
+                inspecao_id:  value.inspecao_id,
+                nome: value.nome,
+                orientation: value.orientation,
+                status:'true',
+                comentario: value.descricao,
+            });
+        });
     }
 
     const handleSignClick = async () => {
@@ -75,13 +90,24 @@ export default() => {
                 //console.log(json.inspecoes.length);
 
                 let objs = (json.inspecoes);
-                objs.forEach(obj => {
-                    saveInspecao(obj);
-                    let docs = obj.listaDocumentos;
-                    docs.forEach(doc => {
-                        saveDocumeto(doc);
+                //console.log("OPA",objs.length);
+                if(objs.length>0){
+                    objs.forEach(obj => {
+                        saveInspecao(obj);
+
+                        let docs = obj.listaDocumentos;
+                        docs.forEach(doc => {
+                            saveDocumeto(doc);
+                        });
+
+                        let imgs = obj.albumDeFotos;
+                        docs.forEach(doc => {
+                            saveImagem(imgs);
+                        });
+
+                        console.log(obj.albumDeFotos);
                     });
-                });
+                }
                 await AsyncStorage.setItem('sincronia', 'true');
 
                 /*
@@ -112,10 +138,10 @@ export default() => {
                   */
                 const realm = await getRealm();
                 const inspecao = realm.objects('Inspecoes');
-                console.log(inspecao[0].empresa_nome, inspecao.length);
+                //console.log(inspecao[0].empresa_nome, inspecao.length);
 
                 const doc = realm.objects('Documentos');
-                console.log('N TOTAL DE DOCUMENTOS', doc.length);
+                //console.log('N TOTAL DE DOCUMENTOS', doc.length);
 
                 //realm.close();
 
@@ -168,8 +194,6 @@ q                />
                 <SignMessageButtonText>Esqueceu sua senha?</SignMessageButtonText>
                 <SignMessageButtonTextBold>Clique aqui</SignMessageButtonTextBold>
             </SignMessageButton>
-
-
         </Container>
     );
 }
