@@ -32,8 +32,8 @@ export default() => {
     const pickSingWithCamera = async (cropping, mediaType = 'photo') => {
         ImagePicker.openCamera({
             cropping: cropping,
-            width:500,
-            height:500,
+            width:1000,
+            height:1000,
             includeExif: true,
             mediaType,
         })
@@ -57,6 +57,7 @@ export default() => {
             //console.log(image.path);
             //setTempImagem(image.path);
             saveImgDB(image);
+            console.log("OPAAAAAAAAA:",image.path);
         })
         .catch((e) => console.log(e));
 

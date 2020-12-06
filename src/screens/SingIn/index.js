@@ -62,19 +62,23 @@ export default() => {
         //console.log("saveDocumento");
     }
     const saveImagem = async(value) => {
-        //baixo a imagem pela API
-        let json = await Api.getImgURL(value.imagemInspecao, value.nome);
-        //atualizo o banco de dados com a imagem salva
+        //baixar a imagem
+        //console.log("OPAAA:",value);
+        const caminho = await Api.getImgURL(value.imagemInspecao, value.nome);
+        //console.log(caminho);
+        //salvar no banco de dados
         const realm = await getRealm();
         realm.write(() => {
             const imagem = realm.create('Imagens', {
                 inspecao_id:  value.inspecao_id,
+                path: caminho,
                 nome: value.nome,
-                orientation: value.orientation,
-                status:'true',
+                status: "true",
                 comentario: value.descricao,
+                orientation: value.orientation
             });
         });
+
     }
 
     const handleSignClick = async () => {
@@ -101,11 +105,9 @@ export default() => {
                         });
 
                         let imgs = obj.albumDeFotos;
-                        docs.forEach(doc => {
-                            saveImagem(imgs);
+                        imgs.forEach(doc => {
+                            saveImagem(doc);
                         });
-
-                        console.log(obj.albumDeFotos);
                     });
                 }
                 await AsyncStorage.setItem('sincronia', 'true');

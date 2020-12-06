@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { Alert, Button, Linking, StyleSheet, View } from "react-native";
+import { Alert, Button, Linking, StyleSheet, View,  } from "react-native";
+import RNFetchBlob from 'rn-fetch-blob';
+import CameraRoll from '@react-native-community/cameraroll';
 
 
 const BASE_API = 'http://192.168.0.106'; //garanhuns
@@ -127,17 +129,41 @@ export default {
    },
 
    getImgURL: async (url,nome) => {
+    let dirs = RNFetchBlob.fs.dirs;
+    let local = 'file:///storage/emulated/0/Android/data/com.appvisa/files/Pictures/'
+
+    
     RNFetchBlob.config({
-        fileCache: true,
+      fileCache: true,
+      appendExt: 'jpeg',
+      path : dirs.DocumentDir   +"/"+ url,
+    })
+      .fetch('GET', `${BASE_API}/imagens/inspecoes/`+url)
+      .then(res => {
+        CameraRoll.save(res.data, 'photo').then(onfulfilled => {
+            //console.log(res.path(), dirs.DocumentDir, onfulfilled);
+            console.log("opa",dirs.DocumentDir);
+            console.log("opa",dirs.CacheDir);
+            console.log("opa",dirs.DCIMDir);
+            console.log("opa",dirs.DownloadDir);
+
+        });
       })
-        .fetch(`${BASE_API}/imagens/inspecoes/`+url)
-        .then(res => {
-          CameraRoll.saveToCameraRoll(res.data, nome)
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
+      .catch(error => console.log(error));
+      return "file://"+dirs.DocumentDir   +"/"+ url;  
+      
+    
+    /*RNFetchBlob.config({
+        // response data will be saved to this path if it has access right.
+        path : dirs.DocumentDir + '/path-to-file.anything'
+      }).fetch('GET', `${BASE_API}/imagens/inspecoes/1728728202.jpeg`)
+    .then((res) => {
+        let status = res.info().status; 
+        console.log("STATUSSS:", status);
         })
         .catch(error => console.log(error));
-   },
+   */
+    },
    /*
     * FUNCAO: funcao para capturar os documentos por cnae
     * ENTRADA: inspecao_id

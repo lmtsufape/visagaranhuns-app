@@ -25,6 +25,7 @@ import getRealm from '../../services/realm';
 import { CustomButtonProgramacao,LoadingIcon, CustomButtonHistorico, CustomButtonAtualizar, CustomButtonExit, CustomButtonText } from './styles';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Api from '../../Api';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default () => {
 
@@ -61,7 +62,16 @@ export default () => {
                 }
             })    
             
+            //deletar todas as fotos do cel
             const realm = await getRealm();
+            const imagens = realm.objects('Imagens');
+            imagens.forEach(obj => {
+                console.log("del:",obj.id, obj.inspecao_id, obj.path,  obj.status, obj.comentario);
+                
+            });
+
+
+            
             realm.write(() => {realm.deleteAll()});
 
             navigation.reset({
@@ -146,6 +156,8 @@ export default () => {
         //quando concluir a sincronização o status muda e o icone volta ao normal
         //await AsyncStorage.setItem('sincronia', 'true');
         //setLoading(false)
+        setLoading(false);
+        await AsyncStorage.setItem('sincronia', 'true');
     }
     /*
     * FUNCAO: defino a ação que vai ser tomada apos a verificação 
