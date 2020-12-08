@@ -3,16 +3,18 @@ import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage';
 import { UserContext } from '../../contexts/UserContext';
 import { Container, InputArea, CustomButton, CustomButtonText, SignMessageButton, SignMessageButtonText, SignMessageButtonTextBold } from './styles';
-import { Text } from 'react-native';
+import { Text,Alert } from 'react-native';
 import Api from '../../Api';
 import getRealm from '../../services/realm';
 import SignInput from '../../components/SignInput'
 import LogoGus from '../../assets/logo_visaGus.svg';
 import react from 'react';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 export default() => {
     const { dispatch: userDispatch} = useContext(UserContext);
     const navigation = useNavigation();
+    const netInfo = useNetInfo();
 
     const [emailField, setEmailField] = useState('');
     const [passwordField, setPasswordField] = useState('');
@@ -82,87 +84,124 @@ export default() => {
     }
 
     const handleSignClick = async () => {
+        const realm2 = await getRealm();
+        realm2.write(() => {realm2.deleteAll()});
+
         if(emailField != '' && passwordField != ''){
-            let json = await Api.signIn(emailField, passwordField);
-            if(json.success == 'true'){
-                //armazeno o token
-                await AsyncStorage.setItem('token', json.token);
-                await AsyncStorage.setItem('user', JSON.stringify(json.table_data));
-                //await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));
-                //console.log(json.inspecoes[0].listaDocumentos)
-                //armazeno os dados o usuario logado
-                //console.log(json.inspecoes.length);
+            if(netInfo.isConnected) {
+                let json = await Api.signIn(emailField, passwordField);
+                if(json.success == 'true'){
+                    //armazeno o token
+                    await AsyncStorage.setItem('token', json.token);
+                    await AsyncStorage.setItem('user', JSON.stringify(json.table_data));
+                    //await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));
+                    //console.log(json.inspecoes[0].listaDocumentos)
+                    //armazeno os dados o usuario logado
+                    //console.log(json.inspecoes.length);
 
-                let objs = (json.inspecoes);
-                //console.log("OPA",objs.length);
-                if(objs.length>0){
-                    objs.forEach(obj => {
-                        saveInspecao(obj);
+                    let objs = (json.inspecoes);
+                    //console.log("OPA",objs.length);
+                    if(objs.length>0){
+                        objs.forEach(obj => {
+                            saveInspecao(obj);
 
-                        let docs = obj.listaDocumentos;
-                        docs.forEach(doc => {
-                            saveDocumeto(doc);
+                            let docs = obj.listaDocumentos;
+                            docs.forEach(doc => {
+                                saveDocumeto(doc);
+                            });
+
+                            let imgs = obj.albumDeFotos;
+                            imgs.forEach(doc => {
+                                saveImagem(doc);
+                            });
                         });
-
-                        let imgs = obj.albumDeFotos;
-                        imgs.forEach(doc => {
-                            saveImagem(doc);
-                        });
-                    });
-                }
-                await AsyncStorage.setItem('sincronia', 'true');
-
-                /*
-                const realm = await getRealm();
-                realm.write(() => {
-                    const inspecao = realm.create('Inspecoes', {
-                        inspecao_id:  json.inspecoes.inspecao_id,
-                        empresa_nome: json.inspecoes.empresa_nome,
-                        rua: json.inspecoes.rua,
-                        numero: json.inspecoes.numero,
-                        bairro: json.inspecoes.bairro,
-                        cep: json.inspecoes.cep,
-                        cnpjcpf: json.inspecoes.cnpjcpf,
-                        representante_legal: json.inspecoes.representante_legal,
-                        telefone1: json.inspecoes.telefone1,
-                        telefone2: json.inspecoes.telefone2,
-                        email: json.inspecoes.email,
-                        data: json.inspecoes.data,
-                        status: json.inspecoes.status,
-                        tipo: json.inspecoes.tipo,
-                        descricao: json.inspecoes.descricao,
-                    });
-                  });
-                  //realm.close();
-
-                const inspecao = realm.objects('Inspecoes');
-                console.log(inspecao[0].empresa_nome);
-                  */
-                const realm = await getRealm();
-                const inspecao = realm.objects('Inspecoes');
-                //console.log(inspecao[0].empresa_nome, inspecao.length);
-
-                const doc = realm.objects('Documentos');
-                //console.log('N TOTAL DE DOCUMENTOS', doc.length);
-
-                //realm.close();
-
-                userDispatch({
-                    type:'setAvatar',
-                    payload:{
-                        id:json.table_data[0].id,
-                        name:json.table_data[0].name,
-                        email:json.table_data[0].email
                     }
-                })      
-                navigation.reset({
-                    routes:[{name:'MainStackLogado'}]
-                })
-            }else{
-                alert("E-mail e/ou senha errados!")
+                    await AsyncStorage.setItem('sincronia', 'true');
+
+                    /*
+                    const realm = await getRealm();
+                    realm.write(() => {
+                        const inspecao = realm.create('Inspecoes', {
+                            inspecao_id:  json.inspecoes.inspecao_id,
+                            empresa_nome: json.inspecoes.empresa_nome,
+                            rua: json.inspecoes.rua,
+                            numero: json.inspecoes.numero,
+                            bairro: json.inspecoes.bairro,
+                            cep: json.inspecoes.cep,
+                            cnpjcpf: json.inspecoes.cnpjcpf,
+                            representante_legal: json.inspecoes.representante_legal,
+                            telefone1: json.inspecoes.telefone1,
+                            telefone2: json.inspecoes.telefone2,
+                            email: json.inspecoes.email,
+                            data: json.inspecoes.data,
+                            status: json.inspecoes.status,
+                            tipo: json.inspecoes.tipo,
+                            descricao: json.inspecoes.descricao,
+                        });
+                    });
+                    //realm.close();
+
+                    const inspecao = realm.objects('Inspecoes');
+                    console.log(inspecao[0].empresa_nome);
+                    */
+                    const realm = await getRealm();
+                    const inspecao = realm.objects('Inspecoes');
+                    //console.log(inspecao[0].empresa_nome, inspecao.length);
+
+                    const doc = realm.objects('Documentos');
+                    //console.log('N TOTAL DE DOCUMENTOS', doc.length);
+
+                    //realm.close();
+
+                    userDispatch({
+                        type:'setAvatar',
+                        payload:{
+                            id:json.table_data[0].id,
+                            name:json.table_data[0].name,
+                            email:json.table_data[0].email
+                        }
+                    })      
+                    navigation.reset({
+                        routes:[{name:'MainStackLogado'}]
+                    })
+                }else if(json.success == 'false'){
+                    Alert.alert(
+                        'Atenção!',
+                        'E-mail e/ou senha errados!',
+                        [
+                        {
+                            text: 'Fechar',
+                            style: 'cancel'
+                        },
+                        ],
+                        { cancelable: false }
+                    );
+                }else{
+                    Alert.alert(
+                        'Atenção!',
+                        'Verifique sua conexão e tente novamente!',
+                        [
+                          {
+                            text: 'Fechar',
+                            style: 'cancel'
+                          },
+                        ],
+                        { cancelable: false }
+                    );
+                }
             }
         }else{
-            alert("Preencha os campos!");
+            Alert.alert(
+                'Atenção!',
+                'Preencha os campos e tente novamente!',
+                [
+                  {
+                    text: 'Fechar',
+                    style: 'cancel'
+                  },
+                ],
+                { cancelable: false }
+            );
         }
     }
 

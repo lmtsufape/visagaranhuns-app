@@ -57,7 +57,6 @@ export default() => {
             //console.log(image.path);
             //setTempImagem(image.path);
             saveImgDB(image);
-            console.log("OPAAAAAAAAA:",image.path);
         })
         .catch((e) => console.log(e));
 

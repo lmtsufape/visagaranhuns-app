@@ -25,7 +25,9 @@ import getRealm from '../../services/realm';
 import { CustomButtonProgramacao,LoadingIcon, CustomButtonHistorico, CustomButtonAtualizar, CustomButtonExit, CustomButtonText } from './styles';
 import {useNetInfo} from '@react-native-community/netinfo';
 import Api from '../../Api';
+import * as RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
+import CameraRoll from '@react-native-community/cameraroll';
 
 export default () => {
 
@@ -46,6 +48,7 @@ export default () => {
        navigation.navigate("Historic")
     }
     const handleLogoutClick = async () =>{
+        //limpar o asyncstorage
             let novoId = "";
             let novoName = "";
             let novoEmail = "";
@@ -62,21 +65,50 @@ export default () => {
                 }
             })    
             
-            //deletar todas as fotos do cel
+        //deletar todas as fotos do cel
             const realm = await getRealm();
             const imagens = realm.objects('Imagens');
-            imagens.forEach(obj => {
-                console.log("del:",obj.id, obj.inspecao_id, obj.path,  obj.status, obj.comentario);
+            let dirs = RNFetchBlob.fs.dirs;
+         /*   imagens.forEach(obj => {
+                console.log("del:",obj.id, obj.inspecao_id, obj.path, obj.nome,  obj.status, obj.comentario);
+                let arrayCaminho = obj.path.split('/');
+                let nomeDoArquivo = arrayCaminho[arrayCaminho.length-1];
+                console.log(nomeDoArquivo);
                 
-            });
+                
+                RNFS.exists(dirs.DCIMDir +"/"+ nomeDoArquivo)
+                    .then( (result) => {
+                        //console.log("file exists: ", result);
+                        console.log("RESULT: ",result);
+                            console.log("AVISO: ",dirs.DCIMDir +"/"+ nomeDoArquivo);
+                            //CameraRoll.deletePhotos(obj.path)
+                            RNFS.unlink('file:///data/user/0/com.appvisa/files')
+                            .then(() => {
+                            console.log('FILE DELETED');
+                            })
+                            // `unlink` will throw an error, if the item to unlink does not exist
+                            .catch((err) => {
+                            console.log("ERROR:", err.message);
+                            });
 
+                    })
+                    .catch((err) => {
+                        console.log("error2: ",err.message);
+                    });
+                    
+                  }); */
+        //apagar todo o DB
+            //apagarRealm();
 
-            
-            realm.write(() => {realm.deleteAll()});
-
+        //ir para a tela de login
             navigation.reset({
                 routes:[{name:'SingIn'}]
-            })
+            });
+            
+    }
+    const apagarRealm = async () => {
+        const realm2 = await getRealm();
+        realm2.write(() => {realm2.deleteAll()});
     }
     const handleSincronizarClick = async () => {
         const sincronia = await AsyncStorage.getItem('sincronia');
@@ -87,7 +119,7 @@ export default () => {
                 [
                   {
                     text: 'Ok',
-                    onPress: () => AsyncStorage.setItem('sincronia', 'false'),
+                    //onPress: () => AsyncStorage.setItem('sincronia', 'false'),
                     style: 'cancel'
                   },
                 ],
@@ -129,11 +161,11 @@ export default () => {
         setLoading(true)
         const realm = await getRealm();
         let imagens = realm.objects('Imagens').filtered('status == "false"');
-        imagens.forEach(obj => {
-            verificaBD(obj.inspecao_id, obj.nome, obj.comentario).then((value) => acaoSincronizarDados(value, obj));
+        //imagens.forEach(obj => {
+            //verificaBD(obj.inspecao_id, obj.nome, obj.comentario).then((value) => acaoSincronizarDados(value, obj));
             //console.log(obj.inspecao_id, obj.nome, obj.comentario);
              
-        });
+        //});
 
 /*        setTimeout(() => {let imagens = realm.objects('Imagens');
                             imagens.forEach(obj => {

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, BotaoCard, AreaComentario, InfoArea, InfoCardText, ComentarioText, InfoText, ContainerButton, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText, LoadingIcon, ListArea } from './styles';
+import { Container, BotaoCard, AreaComentario, InfoArea, InfoCardText,Cabecalho,BotaoDeletar, ComentarioText, InfoText, ContainerButton, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText, LoadingIcon, ListArea } from './styles';
 import { Text, Alert, Image, ScrollView, StyleSheet, TouchableOpacity, View, FlatList, Dimensions, TextInput } from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import getRealm from '../../services/realm';
 import AsyncStorage from '@react-native-community/async-storage';
+import LixeiraIcon from '../../assets/logo_lixo.svg';
 
 const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height;
 export default() => {
     const route = useRoute();
     const navigation = useNavigation();
@@ -26,17 +28,58 @@ export default() => {
             return useInfo.status
         }
     }
-    const handleSalvarComentarioButtonClick = async () => {
-        //console.log("OPA", comentarioField,useInfo.comentario, useInfo.inspecao_id, useInfo.path, useInfo.comentario, useInfo.status, WIDTH);
-        /*const realm = await getRealm();
+    const handleDeletarImagemButtonClick = async () => {
+        Alert.alert(
+            'Deletar',
+            'Deseja deletar essa imagem?',
+            [
+              {
+                text: 'Não',
+                //onPress: () => console.log('Não - salvar')
+              },
+              {
+                text: 'Sim',
+                onPress: () => deletarImagem()
+              },
+            ],
+            { cancelable: false }
+        );
+    }
+    const deletarImagem = async () => {
+        modificoStatus(); //função para modifcar o status geral
+        const realm = await getRealm();
         let imagens = realm.objects('Imagens').filtered('path == "'+useInfo.path+'"');
-        console.log("ANTIGO:",imagens[0].comentario);
         realm.write(() => {
-            imagens[0].comentario = comentarioField;
+            realm.delete(imagens)
         });
-        console.log("NOVO",imagens[0].comentario);
-
-        */
+        Alert.alert(
+            'Imagem',
+            'Imagem deletada com sucesso!',
+            [
+              {
+                text: 'Ok',
+                onPress: () => navigation.navigate("Inspecionar",{
+                    inspecao_id: useInfo.inspecao_id,
+                })
+              },
+            ],
+            { cancelable: false }
+        );
+    }
+    const modificoStatus = async () => {
+        const realm = await getRealm();
+        let contador = realm.objects('Imagens').filtered('status == "false"');
+        if(contador.length == 1){
+            if(contador[0].path === useInfo.path){
+                AsyncStorage.setItem('sincronia', 'true');
+            }else{
+                AsyncStorage.setItem('sincronia', 'false');
+            }
+        }else if(contador.length > 1){
+            AsyncStorage.setItem('sincronia', 'false')
+        }
+    }
+    const handleSalvarComentarioButtonClick = async () => {
         const realm = await getRealm();
         let imagens = realm.objects('Imagens').filtered('path == "'+useInfo.path+'"');
 
@@ -67,7 +110,6 @@ export default() => {
                 [
                       {
                         text: 'Não',
-                        //onPress: () => console.log('Não - atualizar')
                       },
                       {
                         text: 'Sim',
@@ -81,7 +123,6 @@ export default() => {
                 { cancelable: false }
             );
         }
-        console.log("NOVO",imagens[0].comentario);
     }
     const getVerificaComentario = async (tipo,texto) => {
         const realm = await getRealm();
@@ -96,7 +137,6 @@ export default() => {
                         onPress: () => 
                         AsyncStorage.setItem('sincronia', 'false')
                       },
-                      
                 ],
                 { cancelable: false }
             );
@@ -111,13 +151,11 @@ export default() => {
                       {
                         text: 'Fechar',
                       },
-                      
                 ],
                 { cancelable: false }
             );
         }
     }
-    
     return(
         <Container>
             <InfoArea>
@@ -127,7 +165,15 @@ export default() => {
                 />
             </InfoArea>
             <AreaComentario>
-                <InfoCardText>Comentário</InfoCardText>
+                <Cabecalho>
+                    <InfoCardText>Comentário</InfoCardText>
+                    {useInfo.status === "false"
+                        ?<BotaoDeletar onPress={handleDeletarImagemButtonClick}>
+                            <LixeiraIcon  width="20" style={styles.lixeiraIcon}/>
+                        </BotaoDeletar>
+                         : <Text></Text>
+                    }
+                </Cabecalho>
                 <View style={styles.containerTextArea}>
                     <TextInput style={styles.textArea}
                         multiline={true}
@@ -163,7 +209,10 @@ const styles = StyleSheet.create({
         margin: 10,
         borderColor:"#a9a9a9",
         borderRadius:4,
-        height:100,
+        height:(HEIGHT-WIDTH)-190,
         textAlignVertical: "top",
+    },
+    lixeiraIcon:{
+        paddingTop:-20,
     }
   });

@@ -52,9 +52,9 @@ export const LoadingIcon = styled.ActivityIndicator`
 export const ListArea = styled.View`
 `;
 export const InfoCardText = styled.Text`
-    fontSize:16px;
+    fontSize:23px;
     padding-left:15px;
-    fontSize:18px;
+    margin-top:5px;
 `;
 export const InfoAreaEstabelecimento = styled.View`
     background-color:#909090;
@@ -89,4 +89,17 @@ export const BotaoCard = styled.TouchableOpacity`
     border-radius:8px;
     shadowOpacity: 0.27;
     elevation:4;
+`;
+export const Cabecalho = styled.View`
+    flex-direction:row;
+    justify-content:space-between;
+`;
+export const BotaoDeletar = styled.TouchableOpacity`
+    width:45px;
+    height:45px;
+    backgroundColor:#ff0000;
+    justify-content:center;
+    alignItems:center;
+    border-radius:8px;
+    margin-right:15px;
 `;

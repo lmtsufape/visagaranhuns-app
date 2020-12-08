@@ -24,17 +24,22 @@ export default {
     },
     //login - entrar
     signIn: async (email, password) => {
-        const req = await fetch(`${BASE_API}/api/login?json=true`,
-        {
-            method:'POST',
-            headers:{
-                Acenpt: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email,password})
-        });
-        const json = await req.json();
-        return json;
+        try {
+            const req = await fetch(`${BASE_API}/api/login?json=true`,
+            {
+                method:'POST',
+                headers:{
+                    Acenpt: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email,password})
+            });
+            const json = await req.json();
+            return json;
+        } catch (error) {
+            //console.error("OPAAA",error);
+        }
+        return 0;
     },
     getInspecoes: async () => {
         const token = await AsyncStorage.getItem('token');
@@ -142,11 +147,11 @@ export default {
       .then(res => {
         CameraRoll.save(res.data, 'photo').then(onfulfilled => {
             //console.log(res.path(), dirs.DocumentDir, onfulfilled);
-            console.log("opa",dirs.DocumentDir);
+            /*console.log("opa",dirs.DocumentDir);
             console.log("opa",dirs.CacheDir);
             console.log("opa",dirs.DCIMDir);
             console.log("opa",dirs.DownloadDir);
-
+            */
         });
       })
       .catch(error => console.log(error));
