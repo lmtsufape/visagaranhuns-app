@@ -5,6 +5,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 
 
 const BASE_API = 'http://192.168.0.106'; //garanhuns
+//const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
 //const BASE_API = 'http://192.168.15.10'; //recife
 
 export default {
@@ -146,28 +147,10 @@ export default {
       .fetch('GET', `${BASE_API}/imagens/inspecoes/`+url)
       .then(res => {
         CameraRoll.save(res.data, 'photo').then(onfulfilled => {
-            //console.log(res.path(), dirs.DocumentDir, onfulfilled);
-            /*console.log("opa",dirs.DocumentDir);
-            console.log("opa",dirs.CacheDir);
-            console.log("opa",dirs.DCIMDir);
-            console.log("opa",dirs.DownloadDir);
-            */
         });
       })
       .catch(error => console.log(error));
       return "file://"+dirs.DocumentDir   +"/"+ url;  
-      
-    
-    /*RNFetchBlob.config({
-        // response data will be saved to this path if it has access right.
-        path : dirs.DocumentDir + '/path-to-file.anything'
-      }).fetch('GET', `${BASE_API}/imagens/inspecoes/1728728202.jpeg`)
-    .then((res) => {
-        let status = res.info().status; 
-        console.log("STATUSSS:", status);
-        })
-        .catch(error => console.log(error));
-   */
     },
    /*
     * FUNCAO: funcao para capturar os documentos por cnae
@@ -182,19 +165,25 @@ export default {
             console.log("Deu erro no link, tente novamente!");
           }
         });
-        /*const req = await fetch(`${BASE_API}/api/donwload/img/pdf?json=true`,
+    },
+    /*
+    *   FUNCAO: função que baixa as inspecoes, documentos e imagens
+    *   ENTRADA: token
+    *   SAIDA: (lista) inspecoes, documentos e imagens
+    */
+    refresh: async () => {
+        const token = await AsyncStorage.getItem('token');
+        const req = await fetch(`${BASE_API}/api/atualizar/aplicativo?json=true`,
         {
-            method:'GET',
+            method:'POST',
             headers:{
                 Acenpt: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({caminho})
+            body: JSON.stringify({token})
         });
-        
         const json = await req.json();
         return json;
-        */
     }
 
 }

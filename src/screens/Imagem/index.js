@@ -10,6 +10,7 @@ import LixeiraIcon from '../../assets/logo_lixo.svg';
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 export default() => {
+    const regex = /(<([^>]+)>)/ig;
     const route = useRoute();
     const navigation = useNavigation();
     const [useInfo] = useState({
@@ -179,7 +180,7 @@ export default() => {
                         multiline={true}
                         numberOfLines={4}
                         placeholder= {"Faça um comentário!"}
-                        value = {comentarioField}
+                        value = {comentarioField.replace(regex,'')}
                         onChangeText={t=>setComentarioField(t)}
                     />
                 </View>

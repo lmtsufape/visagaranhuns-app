@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-community/async-storage';
 import { UserContext } from '../../contexts/UserContext';
-import { Container, InputArea, CustomButton, CustomButtonText, SignMessageButton, SignMessageButtonText, SignMessageButtonTextBold } from './styles';
+import { Container, InputArea, CustomButton,LoadingIcon, CustomButtonText, SignMessageButton, SignMessageButtonText, SignMessageButtonTextBold } from './styles';
 import { Text,Alert } from 'react-native';
 import Api from '../../Api';
 import getRealm from '../../services/realm';
@@ -15,6 +15,7 @@ export default() => {
     const { dispatch: userDispatch} = useContext(UserContext);
     const navigation = useNavigation();
     const netInfo = useNetInfo();
+    const [loading, setLoading] = useState(false);
 
     const [emailField, setEmailField] = useState('');
     const [passwordField, setPasswordField] = useState('');
@@ -84,6 +85,7 @@ export default() => {
     }
 
     const handleSignClick = async () => {
+        setLoading(true);
         const realm2 = await getRealm();
         realm2.write(() => {realm2.deleteAll()});
 
@@ -117,42 +119,9 @@ export default() => {
                         });
                     }
                     await AsyncStorage.setItem('sincronia', 'true');
-
-                    /*
-                    const realm = await getRealm();
-                    realm.write(() => {
-                        const inspecao = realm.create('Inspecoes', {
-                            inspecao_id:  json.inspecoes.inspecao_id,
-                            empresa_nome: json.inspecoes.empresa_nome,
-                            rua: json.inspecoes.rua,
-                            numero: json.inspecoes.numero,
-                            bairro: json.inspecoes.bairro,
-                            cep: json.inspecoes.cep,
-                            cnpjcpf: json.inspecoes.cnpjcpf,
-                            representante_legal: json.inspecoes.representante_legal,
-                            telefone1: json.inspecoes.telefone1,
-                            telefone2: json.inspecoes.telefone2,
-                            email: json.inspecoes.email,
-                            data: json.inspecoes.data,
-                            status: json.inspecoes.status,
-                            tipo: json.inspecoes.tipo,
-                            descricao: json.inspecoes.descricao,
-                        });
-                    });
-                    //realm.close();
-
-                    const inspecao = realm.objects('Inspecoes');
-                    console.log(inspecao[0].empresa_nome);
-                    */
                     const realm = await getRealm();
                     const inspecao = realm.objects('Inspecoes');
-                    //console.log(inspecao[0].empresa_nome, inspecao.length);
-
                     const doc = realm.objects('Documentos');
-                    //console.log('N TOTAL DE DOCUMENTOS', doc.length);
-
-                    //realm.close();
-
                     userDispatch({
                         type:'setAvatar',
                         payload:{
@@ -160,11 +129,13 @@ export default() => {
                             name:json.table_data[0].name,
                             email:json.table_data[0].email
                         }
-                    })      
+                    });
+                    setLoading(false);      
                     navigation.reset({
                         routes:[{name:'MainStackLogado'}]
                     })
                 }else if(json.success == 'false'){
+                    setLoading(false);
                     Alert.alert(
                         'Atenção!',
                         'E-mail e/ou senha errados!',
@@ -177,6 +148,7 @@ export default() => {
                         { cancelable: false }
                     );
                 }else{
+                    setLoading(false);
                     Alert.alert(
                         'Atenção!',
                         'Verifique sua conexão e tente novamente!',
@@ -191,6 +163,7 @@ export default() => {
                 }
             }
         }else{
+            setLoading(false);
             Alert.alert(
                 'Atenção!',
                 'Preencha os campos e tente novamente!',
@@ -219,16 +192,21 @@ export default() => {
                     placeholder="Digite seu e-mail"
                     value = {emailField}
                     onChangeText={t=>setEmailField(t)}
-q                />
+                />
                 <SignInput
                     placeholder="Digite sua senha"
                     value = {passwordField}
                     onChangeText={t=>setPasswordField(t)}
                     password={true}
                 />
-                <CustomButton onPress={handleSignClick}>
-                    <CustomButtonText>Entrar</CustomButtonText>
-                </CustomButton>
+                {loading == false
+                    ?<CustomButton onPress={handleSignClick}>
+                        <CustomButtonText>Entrar</CustomButtonText>
+                    </CustomButton>
+                    :<CustomButton>
+                        <CustomButtonText><LoadingIcon size="large" color="#fff"/></CustomButtonText>
+                    </CustomButton>
+                }   
             </InputArea>
 
             <SignMessageButton onPress={handleMessageButtonClick}>
