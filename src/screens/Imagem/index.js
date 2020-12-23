@@ -157,6 +157,11 @@ export default() => {
             );
         }
     }
+    useEffect(()=>{
+        //setInterval(()=> {
+            console.log(useInfo.status);
+        //}, 3000)
+    },[]);
     return(
         <Container>
             <InfoArea>
@@ -165,36 +170,49 @@ export default() => {
                     source={{uri: useInfo.path}}
                 />
             </InfoArea>
-            <AreaComentario>
+            {useInfo.status == "false"
+                ?<AreaComentario>
+                    <Cabecalho>
+                        <InfoCardText>Comentário</InfoCardText>
+                        {useInfo.status === "false"
+                            ?<BotaoDeletar onPress={handleDeletarImagemButtonClick}>
+                                <LixeiraIcon  width="20" style={styles.lixeiraIcon}/>
+                            </BotaoDeletar>
+                            : <Text></Text>
+                        }
+                    </Cabecalho>
+                    <View style={styles.containerTextArea}>
+                        <TextInput style={styles.textArea}
+                            multiline={true}
+                            numberOfLines={4}
+                            placeholder= {"Faça um comentário!"}
+                            value = {comentarioField.replace(regex,'')}
+                            onChangeText={t=>setComentarioField(t)}
+                        />
+                    </View>
+                    <BotaoCard>
+                        {useInfo.comentario === ""
+                            ? <CustomButtonText 
+                                onPress={handleSalvarComentarioButtonClick}
+                                >Salvar</CustomButtonText>
+                            : <CustomButtonText 
+                                onPress={handleSalvarComentarioButtonClick}
+                                >Atualizar</CustomButtonText>
+                        }
+                    </BotaoCard>
+                </AreaComentario>
+                :<AreaComentario>
                 <Cabecalho>
                     <InfoCardText>Comentário</InfoCardText>
-                    {useInfo.status === "false"
-                        ?<BotaoDeletar onPress={handleDeletarImagemButtonClick}>
-                            <LixeiraIcon  width="20" style={styles.lixeiraIcon}/>
-                        </BotaoDeletar>
-                         : <Text></Text>
-                    }
                 </Cabecalho>
                 <View style={styles.containerTextArea}>
-                    <TextInput style={styles.textArea}
-                        multiline={true}
-                        numberOfLines={4}
-                        placeholder= {"Faça um comentário!"}
-                        value = {comentarioField.replace(regex,'')}
-                        onChangeText={t=>setComentarioField(t)}
-                    />
+                    <Text style={styles.campo}>{comentarioField.replace(regex,'')}</Text>
                 </View>
-                <BotaoCard>
-                    {useInfo.comentario === ""
-                        ? <CustomButtonText 
-                            onPress={handleSalvarComentarioButtonClick}
-                            >Salvar</CustomButtonText>
-                        : <CustomButtonText 
-                            onPress={handleSalvarComentarioButtonClick}
-                            >Atualizar</CustomButtonText>
-                    }
-                </BotaoCard>
+                <View style={styles.containerTextArea}>
+                    <Text style={styles.campoRodape}>Essa imagem foi sincronizada, para editar ou deletar acesse o site!</Text>
+                </View>
             </AreaComentario>
+            }
         </Container>
     );
 }
@@ -215,5 +233,13 @@ const styles = StyleSheet.create({
     },
     lixeiraIcon:{
         paddingTop:-20,
+    },
+    campo:{
+        height:(HEIGHT-WIDTH)-190,
+        margin:20,
+    },
+    campoRodape:{
+        margin:20,
+        color:'#909090',
     }
   });

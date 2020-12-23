@@ -48,33 +48,51 @@ export default () => {
        navigation.navigate("Historic")
     }
     const handleLogoutClick = async () =>{
+        Alert.alert(
+            'Sair do aplicativo',
+            'Você deseja sair do aplicativo? -Recomentamos que você sincronize seus dados antes de sair do aplicativo!',
+            [
+              {
+                text: 'Não',
+                //onPress: () => console.log('Não - salvar')
+              },
+              {
+                text: 'Sim',
+                onPress: () => {handlerSairDoApp()}
+                
+              },
+            ],
+            { cancelable: false }
+        );
+            
+    }
+    const handlerSairDoApp = async () => {
         //limpar o asyncstorage
-            let novoId = "";
-            let novoName = "";
-            let novoEmail = "";
-            let novoToken = "";
+        let novoId = "";
+        let novoName = "";
+        let novoEmail = "";
+        let novoToken = "";
 
-            await AsyncStorage.setItem('token',novoToken);
+        await AsyncStorage.setItem('token',novoToken);
 
-            userDispatch({
-                type:'setAvatar',
-                payload:{
-                    id:novoId,
-                    name:novoName,
-                    email:novoEmail,
-                }
-            })    
-            
-        //deletar todas as fotos do cel
-            const realm = await getRealm();
-            const imagens = realm.objects('Imagens');
-            let dirs = RNFetchBlob.fs.dirs;
-         
-        //ir para a tela de login
-            navigation.reset({
-                routes:[{name:'SingIn'}]
-            });
-            
+        userDispatch({
+            type:'setAvatar',
+            payload:{
+                id:novoId,
+                name:novoName,
+                email:novoEmail,
+            }
+        })    
+        
+    //deletar todas as fotos do cel
+        const realm = await getRealm();
+        const imagens = realm.objects('Imagens');
+        let dirs = RNFetchBlob.fs.dirs;
+     
+    //ir para a tela de login
+        navigation.reset({
+            routes:[{name:'SingIn'}]
+        });
     }
     const apagarRealm = async () => {
         const realm2 = await getRealm();
@@ -83,20 +101,51 @@ export default () => {
     const handleSincronizarClick = async () => {
         if(netInfo.isConnected) {
             if(await verificoSeTenhoAlgumaAlteracao() == true){
-                await envioAsMinhasAlteracoes();
-                await verificoSeTenhoNovasInspecoes();
+                Alert.alert(
+                    'Sincronizar',
+                    'Você deseja sincronizar seus dados?',
+                    [
+                      {
+                        text: 'Não',
+                        //onPress: () => console.log('Não - salvar')
+                      },
+                      {
+                        text: 'Sim',
+                        onPress: () => handlerSincronizar()
+                        
+                      },
+                    ],
+                    { cancelable: false }
+                );
             }else{
                 Alert.alert(
                     'Sincronizar',
                     'Seus dados estão sincronizados!',
                     [
                       {
-                        text: 'Ok',
+                        text: 'Fechar',
                         style: 'cancel'
                       },
                     ],
                     { cancelable: false }
                 );
+            /*    Alert.alert(
+                    'Sincronizar',
+                    'Você deseja sincronizar seus dados?',
+                    [
+                      {
+                        text: 'Não',
+                        //onPress: () => console.log('Não - salvar')
+                      },
+                      {
+                        text: 'Sim',
+                        onPress: () => handlerSincronizar()
+                        
+                      },
+                    ],
+                    { cancelable: false }
+                );
+            */
             }
         }else{
             Alert.alert(
@@ -112,15 +161,49 @@ export default () => {
             );
         }
     }
+    const handlerSincronizar = async() => {
+        await envioAsMinhasAlteracoes().then(() => {
+            Alert.alert(
+                'Sincronizar',
+                'Seus dados estão sincronizados!',
+                [
+                    {
+                    text: 'Ok',
+                    style: 'cancel'
+                    },
+                ],
+                { cancelable: false }
+            );
+        });
+        
+        /*await verificoSeTenhoNovasInspecoes().then(() => {
+            Alert.alert(
+                'Sincronizar',
+                'Seus dados estão sincronizados!',
+                [
+                    {
+                    text: 'Ok',
+                    style: 'cancel'
+                    },
+                ],
+                { cancelable: false }
+            );
+        });
+        */
+    }
     const verificoSeTenhoNovasInspecoes = async() => {
+        let token = await AsyncStorage.getItem('token');
         const realm = await getRealm();
-        const json = await Api.refresh();
+        let json = await Api.refresh(token);
         let inspecoes = json.lista_inspecoes;
         arrayTemp = [];
+        arrayTempImg = [];
+        //let objs = JSON.parse(json);
+        //console.log(json.lista_inspecoes);
+
         inspecoes.forEach(obj => {
             let ins = realm.objects('Inspecoes').filtered('inspecao_id == "'+obj.inspecao_id+'"');
-            //encontrado -> verificar os documentos e as imagens
-            if(ins.length == 1 && 
+            if(ins.length == 1 &&
                 ins[0].inspecao_id == obj.inspecao_id && 
                 ins[0].empresa_nome == obj.empresa_nome && 
                 ins[0].rua == obj.rua && 
@@ -133,9 +216,9 @@ export default () => {
                 ins[0].email == obj.email && 
                 ins[0].data == obj.data && 
                 ins[0].tipo == obj.tipo
-                ){ 
-                arrayTemp.push(obj.inspecao_id);   
-                //console.log("encontrei - inspecao");
+            ){
+                arrayTemp.push(obj.inspecao_id);  
+                console.log(arrayTemp);
 
                 //documentos
                 let listaDocumentos = json.lista_documentos; //API
@@ -159,12 +242,15 @@ export default () => {
                             atualizarDocumento(obj.inspecao_id, obj.nome, objLD);
                             //console.log("tem algo diferente");
                         }
-                        //console.log(objLD.inspecao_id, objLD.nome);
                     }
                 });
 
                 //imagens
                 let listaImagens = json.lista_imagens; //API
+                let imggs = realm.objects('Imagens');
+                console.log("API: ", listaImagens.length);
+                console.log("REALM: ", imggs.length);
+                
                 listaImagens.forEach(objImg => {
                     if(objImg.inspecao_id == obj.inspecao_id){
                         let imgLocalizado = realm.objects('Imagens').filtered('inspecao_id = "'+obj.inspecao_id+'" AND nome = "'+objImg.nome+'"'); //REALM
@@ -175,19 +261,20 @@ export default () => {
                             imgLocalizado[0].orientation == objImg.orientation
                         ){
                             //console.log("Encontrei - imagem");
+                            arrayTempImg.push(objImg.nome);  
                         }else if(imgLocalizado.length == 0){
                             //save imagem e comentario
-                            saveImagem(objImg)
+                            //saveImagem(objImg)
                             //console.log("não encontrei");
+                            arrayTempImg.push(objImg.nome);
                         }else{
                             //atualizar
-                            atualizarImagem(obj.inspecao_id, objImg.nome, objImg);
+                            //atualizarImagem(obj.inspecao_id, objImg.nome, objImg);
                             //console.log("tem uma imagem diferente");
+                            arrayTempImg.push(objImg.nome);
                         }
                     }
                 })
-                //console.log(listaImagens.length);
-            //não encontrado -> add a nova inspecao
             }else if(ins.length == 0){
                 saveInspecao(obj);
                 arrayTemp.push(obj.inspecao_id);
@@ -197,11 +284,45 @@ export default () => {
                 atualizarInspecao(obj);
                 arrayTemp.push(obj.inspecao_id);
             }
-
         });
         deletarInspecao(arrayTemp);
+        //setTimeout(() => {selecionarImagensParaDeletar(arrayTempImg, token);},3000)
     }
-    //deletar
+    /*
+    *   FUNCAO: selecionar as imagens para deletar
+    *   ENTRADA: lista de imagens da API
+    *   SAIDA: gerar uma lista com imagens para deletar 
+    */
+    const selecionarImagensParaDeletar = async(value,token) =>{
+        const realm = await getRealm();
+        let ins = realm.objects('Imagens'); //local
+        let cont = 1;
+        ins.forEach(item => {
+            //let imgDelete = realm.objects('Imagens').filtered('nome = "'+item.nome+'"'); //REALM
+            let sts = value.indexOf(item.nome) > -1;
+            if(sts == false){
+                console.log("FALSE: ",item.nome);
+                let imgDelete = realm.objects('Imagens').filtered('nome = "'+item.nome+'"'); //REALM
+                console.log("FALSEEE: ",imgDelete);
+                deletarImagemRealm(imgDelete);
+            }
+            console.log(cont,item.nome,sts);
+            cont = cont +1;
+        })
+        
+    }
+    /*
+    *   FUNCAO: deletar uma imagem especifica no banco de dados do realm (local)
+    *   ENTRADA: nome da imagem
+    *   SAIDA:
+    */
+    const deletarImagemRealm = async(item)=>{
+        const realm = await getRealm();
+        realm.write(() => {
+            realm.delete(item)
+        })
+    }
+    //deletar Inspecao
     const deletarInspecao = async(value) => {
         const realm = await getRealm();
         let ins = realm.objects('Inspecoes'); //local
@@ -329,7 +450,7 @@ export default () => {
           });
     }
     const verificoSeTenhoAlgumaAlteracao = async() =>{
-        await verificoSeTenhoNovasInspecoes();
+        //await verificoSeTenhoNovasInspecoes();
         const realm = await getRealm();
         let imagens = realm.objects('Imagens').filtered('status == "false"');
         if(imagens.length >0 ){
@@ -343,16 +464,19 @@ export default () => {
         let imagens = realm.objects('Imagens').filtered('status == "false"');
         imagens.forEach(obj => {
             verificaBD(obj.inspecao_id, obj.nome, obj.comentario).then((value) => acaoSincronizarDados(value, obj));
+            //verificaBD(obj.inspecao_id, obj.nome, obj.comentario).then((value) => console.log(value, obj.nome));
         });
-
+        
     }
-    const sincronizarDados = async() => {
+    /*const sincronizarDados = async() => {
         setLoading(true)
         const realm = await getRealm();
         let imagens = realm.objects('Imagens').filtered('status == "false"');
         setLoading(false);
         await AsyncStorage.setItem('sincronia', 'true');
     }
+    */
+
     /*
     * FUNCAO: defino a ação que vai ser tomada apos a verificação 
     * ENTRADA: (boleano) value, (imagem) imagem, (string) comentario
@@ -361,9 +485,12 @@ export default () => {
     const acaoSincronizarDados = async(value, obj) =>{
         //não enviou a imagem e nem o comentário
         if(value.comentario == false && value.imagem == false){
-            let formato = obj.path.split('.');
-            let mime = "mime/"+formato[formato.length-1];                                
-            let teste = await Api.setImg(obj.inspecao_id, obj.path, obj.nome, obj.orientation, mime, obj.comentario, obj.status);
+           let formato = obj.path.split('.');
+           let mime = "mime/"+formato[formato.length-1];   
+                                        
+           let teste = await Api.setImg(obj.inspecao_id, obj.path, obj.nome, obj.orientation, mime, obj.comentario, obj.status);
+           console.log(obj.inspecao_id, obj.path, obj.nome, obj.orientation, mime, obj.comentario, obj.status);
+           console.log("TESTE", teste);
             //altero o status da imagem para TRUE (já enviado)
             if(teste.status == true){
                 const realm = await getRealm();
@@ -372,8 +499,11 @@ export default () => {
                     imagens[0].status = "true";
                 })
             }
+            
+            
         //já enviou a imagem mas nao enviou o comentario ou quer atualizar o comentário   
-        }else if(value.imagem == true){
+        }
+        /*else if(value.imagem == true){
             //console.log("OPA", value.comentario);
             let teste = await Api.setComentario(obj.inspecao_id, obj.nome, obj.comentario);
             if(teste.status == true){
@@ -384,6 +514,7 @@ export default () => {
                 })
             }
         }
+        */
     }
     /*
     * FUNCAO: verifica pela API se uma imagem/comentario já foi enviado
@@ -392,6 +523,7 @@ export default () => {
     */
     const verificaBD = async(inspecao_id, nome, comentario) => {
         const req = await Api.verifica(inspecao_id, nome, comentario);
+        console.log("FUNCAO VERIFICARBD", req);
         return req;
     }
     const atualizaStatus = async() =>{
@@ -423,18 +555,20 @@ export default () => {
                     <ProgramacaoIcon width="50" />
                 </CustomButtonProgramacao>
                 
-                    <CustomButtonAtualizar onPress={handleSincronizarClick}>
-                       
-                        <CustomButtonText>Sincronizar</CustomButtonText>
-                            
-                        {loading == false
-                            ?<AtualizarIcon width="50" />
-                            :<LoadingIcon size="large" color="#fff"/>
-                        }
-                    </CustomButtonAtualizar>
+               
+                
+                <CustomButtonAtualizar onPress={handleSincronizarClick}>
+                    
+                    <CustomButtonText>Sincronizar</CustomButtonText>
+                        
+                    {loading == false
+                        ?<AtualizarIcon width="50" />
+                        :<LoadingIcon size="large" color="#fff"/>
+                    }
+                </CustomButtonAtualizar>
                 
                 <CustomButtonExit  onPress={handleLogoutClick}>
-                    <CustomButtonText>Sair do sistema</CustomButtonText>
+                    <CustomButtonText>Sair do aplicativo</CustomButtonText>
                     <SairIcon width="50" />
                 </CustomButtonExit>
 

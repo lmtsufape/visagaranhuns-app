@@ -52,6 +52,7 @@ const SeeProfileButtonText = styled.Text`
 `;
 
 export default ({data}) => {
+    const regex = /(<([^>]+)>)/ig;
     let dataInspecao = data.data.split('-');
     let ano = dataInspecao[0];
     let mes = dataInspecao[1];
@@ -85,7 +86,7 @@ export default ({data}) => {
                 <NomeDoEstabelecimento>{data.empresa_nome.toUpperCase()}</NomeDoEstabelecimento>
                 <TipoRequerimento>{data.tipo}</TipoRequerimento>
                 <DescricaoCnae numberOfLines={1}>{data.descricao.length < 50
-                    ? `${data.descricao}` : `${data.descricao.substring(0,48)}...`
+                    ? `${data.descricao.replace(regex,'')}` : `${data.descricao.replace(regex,'').substring(0,48)}...`
                 }</DescricaoCnae>
                 <DataInspecao>{dia}/{mes}/{ano}</DataInspecao>
             </InfoArea>

@@ -38,7 +38,7 @@ export default() => {
                 representante_legal: value.representante_legal,
                 telefone1: value.telefone1,
                 telefone2: telefone2Temp,
-                email: value.email,
+                email: "exemplo@teste.com",
                 data: value.data,
                 status: value.status,
                 tipo: value.tipo,
@@ -110,11 +110,14 @@ export default() => {
                             let docs = obj.listaDocumentos;
                             docs.forEach(doc => {
                                 saveDocumeto(doc);
+                                //console.log("DOC",doc);
+                                
                             });
 
                             let imgs = obj.albumDeFotos;
                             imgs.forEach(doc => {
                                 saveImagem(doc);
+                                //console.log("IMG",doc);
                             });
                         });
                     }

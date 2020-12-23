@@ -4,8 +4,8 @@ import RNFetchBlob from 'rn-fetch-blob';
 import CameraRoll from '@react-native-community/cameraroll';
 
 
-const BASE_API = 'http://192.168.0.106'; //garanhuns
-//const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
+//const BASE_API = 'http://192.168.0.106'; //garanhuns
+const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
 //const BASE_API = 'http://192.168.15.10'; //recife
 
 export default {
@@ -36,6 +36,7 @@ export default {
                 body: JSON.stringify({email,password})
             });
             const json = await req.json();
+            console.log(json);
             return json;
         } catch (error) {
             //console.error("OPAAA",error);
@@ -163,7 +164,7 @@ export default {
             Linking.openURL(`${BASE_API}/api/donwload/img/pdf?caminho=`+caminho);
           } else {
             console.log("Deu erro no link, tente novamente!");
-          }
+          } 
         });
     },
     /*
@@ -171,19 +172,37 @@ export default {
     *   ENTRADA: token
     *   SAIDA: (lista) inspecoes, documentos e imagens
     */
-    refresh: async () => {
-        const token = await AsyncStorage.getItem('token');
-        const req = await fetch(`${BASE_API}/api/atualizar/aplicativo?json=true`,
+    refresh: async (token) => {
+      /*  console.log(token);
+        const req = await fetch(`${BASE_API}/api/atualizar/aplicativo?token=TX1qlf8TyF7zj3Oj1CsnjVA0VkZvi8i3a98M8SgGKthiDAOSemXmg0ywJ0Me`,
         {
             method:'POST',
             headers:{
                 Acenpt: 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({token})
+            //body: JSON.stringify({token})
+        }).then((value) => console.log("STATUS:", value.status));
+        const json2 = await req.json();
+        console.log("RESULTADO", json2.success);
+        //return json;
+        */
+       let caminho = BASE_API+"/api/atualizar/aplicativo?token="+token;
+       try {
+        let resposta = await fetch(caminho,
+        {
+            method:'POST',
+            headers:{
+                Acenpt: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            //body: JSON.stringify({token})
         });
-        const json = await req.json();
+        let json = await resposta.json();
         return json;
+    } catch (error) {
+        //console.error("ERROR: ",error);
+    }
     }
 
 }
