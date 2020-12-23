@@ -15,6 +15,8 @@ const Input = styled.TextInput`
     flex:1;
     font-size:16px;
     margin-left:10px;
+    borderWidth: 0;
+    margin-top:10px;
 `;
 
 export default ({placeholder, value, onChangeText, password}) =>{

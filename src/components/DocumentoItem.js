@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import Api from '../Api';
 
 const Area = styled.TouchableOpacity`
     background-color:#fff;
@@ -52,12 +53,21 @@ const SeeProfileButtonText = styled.Text`
 `;
 
 export default ({data}) => {
-    const regex = /(<([^>]+)>)/ig;
-    let dataInspecao = data.data.split('-');
-    let ano = dataInspecao[0];
-    let mes = dataInspecao[1];
-    let dia = dataInspecao[2];
+    let dataEmissao = data.data_emissao.split('-');
+    let ano_dataEmissoa = dataEmissao[0];
+    let mes_dataEmissoa = dataEmissao[1];
+    let dia_dataEmissoa = dataEmissao[2];
 
+    let ano_dataValidade = '';
+    let mes_dataValidade = '';
+    let dia_dataValidade = '';
+
+    if( data.data_validade != "null"){
+        let dataValidade = data.data_validade.split('-');
+        ano_dataValidade = dataValidade[0];
+        mes_dataValidade = dataValidade[1];
+        dia_dataValidade = dataValidade[2];
+    }
     const navigation = useNavigation();
 
     const handleClick = () => {
@@ -75,20 +85,22 @@ export default ({data}) => {
             email: data.email,
             telefone1: data.telefone1,
             telefone2: data.telefone2,
-            listaDocumentos: data.listaDocumentos,
-            listaImagens: data.listaImagens,
         });
     }
-    //console.log(data.empresa_nome);
+    const handleClickPDF = async () => {
+        Api.getDoc(data.caminho);
+        //console.log(data.caminho);
+       
+    }
+
     return (
-        <Area onPress={handleClick}>
+        <Area onPress={handleClickPDF}>
             <InfoArea>
-                <NomeDoEstabelecimento>{data.empresa_nome.toUpperCase()}</NomeDoEstabelecimento>
-                <TipoRequerimento>{data.tipo}</TipoRequerimento>
-                <DescricaoCnae numberOfLines={1}>{data.descricao.length < 50
-                    ? `${data.descricao.replace(regex,'')}` : `${data.descricao.replace(regex,'').substring(0,48)}...`
-                }</DescricaoCnae>
-                <DataInspecao>{dia}/{mes}/{ano}</DataInspecao>
+                <NomeDoEstabelecimento>{data.nome}</NomeDoEstabelecimento>
+                {data.data_validade != "null"
+                    ? <TipoRequerimento>{dia_dataEmissoa}/{mes_dataEmissoa}/{ano_dataEmissoa} - {dia_dataValidade}/{mes_dataValidade}/{ano_dataValidade}</TipoRequerimento>
+                    : <TipoRequerimento>{dia_dataEmissoa}/{mes_dataEmissoa}/{ano_dataEmissoa}</TipoRequerimento>
+                }
             </InfoArea>
         </Area>
     );

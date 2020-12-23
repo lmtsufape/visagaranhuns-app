@@ -51,7 +51,9 @@ export const CustomButtonHistorico = styled.TouchableOpacity`
     shadowOpacity: 0.27;
     elevation: 5;
 `;
-export const CustomButtonAtulizar = styled.TouchableOpacity`
+export const LoadingIcon = styled.ActivityIndicator`
+`;
+export const CustomButtonAtualizar = styled.TouchableOpacity`
     marginTop:20px;
     background-color: #E2CF5E;
     border-radius:12px;

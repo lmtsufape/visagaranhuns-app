@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { Container, LoadingIcon } from './styles';
-import { Text, View } from 'react-native';
+import { Text, View, Platform,PermissionsAndroid } from 'react-native';
 import { UserContext } from '../../contexts/UserContext';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -16,7 +16,20 @@ export default() => {
     const { dispatch: userDispatch} = useContext(UserContext);
     const navigation = useNavigation();
 
+    const permissionsAndroid = async()=>{
+        if (Platform.OS === 'android') {
+            await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE).then((value) => {
+                //console.log("permissao-w:",value);
+            });
+            await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE).then((value) => {
+                //console.log("permissao-r:",value);
+            });
+        }
+    }
+
     useEffect(()=>{
+        permissionsAndroid();
+
         const checkToken = async () => {
             //navigation.reset({
             //    routes:[{name:'SingIn'}],

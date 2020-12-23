@@ -1,4 +1,5 @@
-import React, {useState, useEffect}  from 'react';
+import React, {useState, useEffect, useContext }  from 'react';
+import { UserContext } from '../../contexts/UserContext';
 import { Text, Header, SectionList, ActivityIndicator, RefreshControl  } from 'react-native';
 import Api from '../../Api';
 import { 
@@ -12,33 +13,28 @@ import {
     ListArea,
     LoadingIcon,
 } from './styles';
+import getRealm from '../../services/realm';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import EstabelecimentoItem from '../../components/EstabelecimentoItem';
 
 export default () => {
-    //const [loading, setLoading] = useState(null);
+    const { state:user } = useContext(UserContext);
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
     const getInspecoes = async () => {
+        const realm = await getRealm();
+        const inspecoes = realm.objects('Inspecoes');
         setList([]);
-        let res = await Api.getInspecoes();
-        if(res.success == 'true'){
-            setList(res.table_data);
-            //console.log(res.table_data);
-        }else{
-            alert("Error: Verifique sua conexão e tente novamente!");
-        }
+        setList(inspecoes);
     }
     useEffect(()=>{
         getInspecoes();
     },[]);
 
     const onRefresh = () =>{
-        setRefreshing(false);
-        getInspecoes();
-
     }
 
     return (

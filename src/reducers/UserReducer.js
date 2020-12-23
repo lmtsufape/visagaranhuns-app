@@ -8,6 +8,8 @@ export const initalState = {
     id:'',
     name:'',
     email:'',
+    imagens: [],
+    sincronia:'',
 };
 
 export const UserReducer = (state, action) => {
@@ -17,9 +19,10 @@ export const UserReducer = (state, action) => {
             return {...state, 
                 id: action.payload.id,
                 name: action.payload.name,
-                email: action.payload.email 
+                email: action.payload.email,
             };
-            default:
-                return state;
+        default:
+            return state;
+                
     }
 }
