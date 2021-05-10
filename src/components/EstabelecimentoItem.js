@@ -79,7 +79,6 @@ export default ({data}) => {
             listaImagens: data.listaImagens,
         });
     }
-    //console.log(data.empresa_nome);
     return (
         <Area onPress={handleClick}>
             <InfoArea>
