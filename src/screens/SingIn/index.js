@@ -20,13 +20,12 @@ export default () => {
     const [passwordField, setPasswordField] = useState('');
 
     const saveInspecao = async (value) => {
-        let telefone2Temp = '';
-        if (value.telefone2 == null) {
-            telefone2Temp = 'null';
-        }
+        let telefone2Temp = value.telefone2 == null ? '' : value.telefone2;
+        let emailTemp = value.email == null ? '' : value.email;
+
         const realm = await getRealm();
         realm.write(() => {
-            const inspecao = realm.create('Inspecoes', {
+            realm.create('Inspecoes', {
                 inspecao_id: value.inspecao_id,
                 empresa_nome: value.empresa_nome,
                 rua: value.rua,
@@ -37,32 +36,35 @@ export default () => {
                 representante_legal: value.representante_legal,
                 telefone1: value.telefone1,
                 telefone2: telefone2Temp,
-                email: "exemplo@teste.com",
+                email: emailTemp,
                 data: value.data,
                 status: value.status,
                 tipo: value.tipo,
                 descricao: value.descricao,
             });
         });
-        //console.log("saveInspecao");
     }
+
     const saveDocumeto = async (value) => {
-        let data_validadeTemp = '';
-        if (value.data_validade == null) {
-            data_validadeTemp = 'null';
-        }
-        const realm = await getRealm();
-        realm.write(() => {
-            const documento = realm.create('Documentos', {
-                inspecao_id: value.inspecao_id,
-                nome: value.nome,
-                caminho: value.caminho,
-                data_emissao: value.data_emissao,
-                data_validade: data_validadeTemp,
+
+        if (value && Object.keys(value).length > 0) {
+            let data_validadeTemp = '';
+            if (value.data_validade == null) {
+                data_validadeTemp = 'null';
+            }
+            const realm = await getRealm();
+            realm.write(() => {
+                realm.create('Documentos', {
+                    inspecao_id: value.inspecao_id,
+                    nome: value.nome,
+                    caminho: value.caminho,
+                    data_emissao: value.data_emissao,
+                    data_validade: data_validadeTemp,
+                });
             });
-        });
-        //console.log("saveDocumento");
+        }
     }
+
     const saveImagem = async (value) => {
         //baixar a imagem
         //console.log("OPAAA:",value);
@@ -71,7 +73,7 @@ export default () => {
         //salvar no banco de dados
         const realm = await getRealm();
         realm.write(() => {
-            const imagem = realm.create('Imagens', {
+            realm.create('Imagens', {
                 inspecao_id: value.inspecao_id,
                 path: caminho,
                 nome: value.nome,
@@ -108,20 +110,21 @@ export default () => {
 
                     let documentos = (json.inspecoes.lista_documentos);
 
-                    documentos.forEach(img => {
-                        saveDocumeto(img);
+                    documentos.forEach(doc => {
+                        saveDocumeto(doc);
                     });
 
                     let imagens = (json.inspecoes.lista_imagens);
 
-                    imagens.forEach(doc => {
-                        saveImagem(doc);
+                    imagens.forEach(img => {
+                        saveImagem(img);
                     });
 
                     await AsyncStorage.setItem('sincronia', 'true');
                     const realm = await getRealm();
                     const inspecao = realm.objects('Inspecoes');
                     const doc = realm.objects('Documentos');
+                    
                     userDispatch({
                         type: 'setAvatar',
                         payload: {
@@ -130,10 +133,12 @@ export default () => {
                             email: json.table_data[0].email
                         }
                     });
+
                     setLoading(false);
                     navigation.reset({
                         routes: [{ name: 'MainStackLogado' }]
                     })
+
                 } else if (json.success == 'false') {
                     setLoading(false);
                     Alert.alert(

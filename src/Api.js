@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { Alert, Button, Linking, StyleSheet, View, } from "react-native";
+import { Linking } from "react-native";
 import RNFetchBlob from 'rn-fetch-blob';
 import CameraRoll from '@react-native-community/cameraroll';
 
 
 //const BASE_API = 'http://192.168.0.106'; //garanhuns
-//const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
+// const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
 //const BASE_API = 'http://192.168.15.10'; //recife
 
 export default {
@@ -37,7 +37,6 @@ export default {
                     body: JSON.stringify({ email, password })
                 });
             const json = await req.json();
-            console.log(json);
             return json;
         } catch (error) {
             //console.error("OPAAA",error);
