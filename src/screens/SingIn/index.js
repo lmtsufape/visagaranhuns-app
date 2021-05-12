@@ -95,6 +95,7 @@ export default () => {
                 let json = await Api.signIn(emailField.toLowerCase(), passwordField);
                 if (json.success == 'true') {
                     //armazeno o token
+
                     await AsyncStorage.setItem('token', json.token);
                     await AsyncStorage.setItem('user', JSON.stringify(json.table_data));
                     //await AsyncStorage.setItem('inspecoes', JSON.stringify(json.inspecoes));

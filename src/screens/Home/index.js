@@ -188,14 +188,15 @@ export default () => {
         let token = await AsyncStorage.getItem('token');
         const realm = await getRealm();
         let json = await Api.refresh(token);
-        
-        if (typeof(json) != "undefined" && json.lista_inspecoes > 0) {
+
+        if (typeof (json) != "undefined" && json.lista_inspecoes.length > 0) {
             let inspecoes = json.lista_inspecoes;
             arrayTemp = [];
             arrayTempImg = [];
 
             inspecoes.forEach(obj => {
                 let ins = realm.objects('Inspecoes').filtered('inspecao_id == "' + obj.inspecao_id + '"');
+
                 if (ins.length == 1 &&
                     ins[0].inspecao_id == obj.inspecao_id &&
                     ins[0].empresa_nome == obj.empresa_nome &&
@@ -215,7 +216,6 @@ export default () => {
 
                     //documentos
                     let listaDocumentos = json.lista_documentos; //API
-                    //let docs = realm.objects('Documentos').filtered('inspecao_id = "'+obj.inspecao_id+'"'); //REALM
                     listaDocumentos.forEach(objLD => {
                         if (objLD.inspecao_id == obj.inspecao_id) {
                             let docLocalizado = realm.objects('Documentos').filtered('inspecao_id = "' + obj.inspecao_id + '" AND nome = "' + objLD.nome + '"'); //REALM
@@ -276,6 +276,9 @@ export default () => {
                 }
             });
             deletarInspecao(arrayTemp);
+        } else {
+            const realm2 = await getRealm();
+            realm2.write(() => { realm2.deleteAll() });
         }
     }
     /*
@@ -316,19 +319,22 @@ export default () => {
     //deletar Inspecao
     const deletarInspecao = async (value) => {
         const realm = await getRealm();
-        let ins = realm.objects('Inspecoes'); //local
+        let ins = realm.objects('Inspecoes');
         ins.forEach(item => {
             let sts = value.indexOf(item.inspecao_id) > -1;
             if (sts == false) {
                 let inspDelete = realm.objects('Inspecoes').filtered('inspecao_id = "' + item.inspecao_id + '"'); //REALM
                 let docDelete = realm.objects('Documentos').filtered('inspecao_id = "' + item.inspecao_id + '"'); //REALM
                 let imgDelete = realm.objects('Imagens').filtered('inspecao_id = "' + item.inspecao_id + '"'); //REALM
+
                 realm.write(() => {
                     realm.delete(inspDelete);
                 });
+
                 realm.write(() => {
                     realm.delete(docDelete);
                 });
+
                 realm.write(() => {
                     realm.delete(imgDelete);
                 });

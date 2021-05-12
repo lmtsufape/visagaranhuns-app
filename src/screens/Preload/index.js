@@ -1,11 +1,9 @@
 import React, { useEffect, useContext } from 'react';
 import { Container, LoadingIcon } from './styles';
-import { Text, View, Platform, PermissionsAndroid } from 'react-native';
+import { Text, Platform, PermissionsAndroid } from 'react-native';
 import { UserContext } from '../../contexts/UserContext';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
-
-import Api from '../../Api';
 
 import LogoGus from '../../assets/logo_visaGus.svg';
 import LoadingIconLMTS from '../../assets/logo_lmts.svg';
@@ -31,9 +29,7 @@ export default () => {
         permissionsAndroid();
 
         const checkToken = async () => {
-            //navigation.reset({
-            //    routes:[{name:'SingIn'}],
-            //});
+            
             const token = await AsyncStorage.getItem('token')
 
             if (token !== null) {
