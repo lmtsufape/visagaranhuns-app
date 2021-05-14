@@ -90,7 +90,6 @@ export default ({data}) => {
     const handleClickPDF = async () => {
         Api.getDoc(data.caminho);
         //console.log(data.caminho);
-       
     }
 
     return (

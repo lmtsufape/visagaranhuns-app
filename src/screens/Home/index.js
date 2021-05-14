@@ -154,6 +154,7 @@ export default () => {
             );
         }
     }
+
     const handlerSincronizar = async () => {
         await envioAsMinhasAlteracoes().then(() => {
             Alert.alert(
@@ -184,17 +185,68 @@ export default () => {
         });
         */
     }
+
+    const verificarDocumento = async (listaDocumento, inspecao) => {
+        const realm = await getRealm();
+
+        listaDocumento.forEach(documento => {
+            let docLocalizado = realm.objects('Documentos')
+                .filtered('inspecao_id = "' + inspecao.inspecao_id + '" AND nome = "' + documento.nome + '"');
+
+            if (docLocalizado.length == 1) {
+                if (docLocalizado[0].nome != documento.nome ||
+                    docLocalizado[0].caminho != documento.caminho ||
+                    docLocalizado[0].data_emissao != documento.data_emissao
+                ) {
+                    atualizarDocumento(inspecao.inspecao_id, inspecao.nome, documento);
+                    return;
+                }
+            } else if (docLocalizado.length == 0) {
+                saveDocumento(documento)
+                return;
+            }
+        });
+    }
+
+    const verificarImagem = async (listaImagem, inspecao) => {
+        const realm = await getRealm();
+
+        listaImagem.forEach(imagem => {
+            let imgLocalizado = realm.objects('Imagens').filtered('inspecao_id = "' + inspecao.inspecao_id + '" AND nome = "' + imagem.nome + '"');
+
+            if (imgLocalizado.length == 1) {
+
+                if (imgLocalizado[0].nome != imagem.nome ||
+                    imgLocalizado[0].comentario != imagem.descricao ||
+                    imgLocalizado[0].orientation != imagem.orientation
+                ) {
+                    atualizarImagem(inspecao.inspecao_id, inspecao.nome, imagem);
+                    return
+                }
+            } else if (imgLocalizado.length == 0) {
+                saveImagem(imagem);
+                return
+            }
+        });
+    }
+
     const verificoSeTenhoNovasInspecoes = async () => {
         let token = await AsyncStorage.getItem('token');
         const realm = await getRealm();
         let json = await Api.refresh(token);
+
 
         if (typeof (json) != "undefined" && json.lista_inspecoes.length > 0) {
             let inspecoes = json.lista_inspecoes;
             arrayTemp = [];
             arrayTempImg = [];
 
+            let listaDocumentos = json.lista_documentos;
+
+            let listaImagens = json.lista_imagens;
+
             inspecoes.forEach(obj => {
+
                 let ins = realm.objects('Inspecoes').filtered('inspecao_id == "' + obj.inspecao_id + '"');
 
                 if (ins.length == 1 &&
@@ -212,68 +264,17 @@ export default () => {
                     ins[0].tipo == obj.tipo
                 ) {
                     arrayTemp.push(obj.inspecao_id);
-                    console.log(arrayTemp);
-
-                    //documentos
-                    let listaDocumentos = json.lista_documentos; //API
-                    listaDocumentos.forEach(objLD => {
-                        if (objLD.inspecao_id == obj.inspecao_id) {
-                            let docLocalizado = realm.objects('Documentos').filtered('inspecao_id = "' + obj.inspecao_id + '" AND nome = "' + objLD.nome + '"'); //REALM
-                            //verifico se as informacoes do documentos estão certas 
-                            if (docLocalizado.length == 1 &&
-                                docLocalizado[0].nome == objLD.nome &&
-                                docLocalizado[0].caminho == objLD.caminho &&
-                                docLocalizado[0].data_emissao == objLD.data_emissao //&&
-                                //docLocalizado[0].data_validade == objLD.data_validade
-                            ) {
-                                //console.log("encontrei - doc");
-                            } else if (docLocalizado.length == 0) {
-                                saveDocumento(objLD)
-                                //console.log("novo documento");
-                            } else {
-                                atualizarDocumento(obj.inspecao_id, obj.nome, objLD);
-                            }
-                        }
-                    });
-
-                    //imagens
-                    let listaImagens = json.lista_imagens; //API
-                    let imggs = realm.objects('Imagens');
-                    console.log("API: ", listaImagens.length);
-                    console.log("REALM: ", imggs.length);
-
-                    listaImagens.forEach(objImg => {
-                        if (objImg.inspecao_id == obj.inspecao_id) {
-                            let imgLocalizado = realm.objects('Imagens').filtered('inspecao_id = "' + obj.inspecao_id + '" AND nome = "' + objImg.nome + '"'); //REALM
-                            //console.log(imgLocalizado[0].inspecao_id, imgLocalizado[0].nome);
-                            if (imgLocalizado.length == 1 &&
-                                imgLocalizado[0].nome == objImg.nome &&
-                                imgLocalizado[0].comentario == objImg.descricao &&
-                                imgLocalizado[0].orientation == objImg.orientation
-                            ) {
-                                //console.log("Encontrei - imagem");
-                                arrayTempImg.push(objImg.nome);
-                            } else if (imgLocalizado.length == 0) {
-                                //save imagem e comentario
-                                //saveImagem(objImg)
-                                //console.log("não encontrei");
-                                arrayTempImg.push(objImg.nome);
-                            } else {
-                                //atualizar
-                                //atualizarImagem(obj.inspecao_id, objImg.nome, objImg);
-                                //console.log("tem uma imagem diferente");
-                                arrayTempImg.push(objImg.nome);
-                            }
-                        }
-                    })
                 } else if (ins.length == 0) {
                     saveInspecao(obj);
                     arrayTemp.push(obj.inspecao_id);
                 } else {
-                    //atualizo os dados da inspecao
                     atualizarInspecao(obj);
                     arrayTemp.push(obj.inspecao_id);
                 }
+
+                verificarDocumento(listaDocumentos, obj);
+                verificarImagem(listaImagens, obj);
+
             });
             deletarInspecao(arrayTemp);
         } else {
@@ -323,9 +324,9 @@ export default () => {
         ins.forEach(item => {
             let sts = value.indexOf(item.inspecao_id) > -1;
             if (sts == false) {
-                let inspDelete = realm.objects('Inspecoes').filtered('inspecao_id = "' + item.inspecao_id + '"'); //REALM
-                let docDelete = realm.objects('Documentos').filtered('inspecao_id = "' + item.inspecao_id + '"'); //REALM
-                let imgDelete = realm.objects('Imagens').filtered('inspecao_id = "' + item.inspecao_id + '"'); //REALM
+                let inspDelete = realm.objects('Inspecoes').filtered('inspecao_id = "' + item.inspecao_id + '"');
+                let docDelete = realm.objects('Documentos').filtered('inspecao_id = "' + item.inspecao_id + '"');
+                let imgDelete = realm.objects('Imagens').filtered('inspecao_id = "' + item.inspecao_id + '"');
 
                 realm.write(() => {
                     realm.delete(inspDelete);
@@ -340,18 +341,13 @@ export default () => {
                 });
             }
         })
-        //deletar inspecoa
-        //deletar documentos
-        //deletar imagens + comentarios
     }
 
-    //atualizar
     const atualizarImagem = async (inspecao_id, nome, value) => {
         const realm = await getRealm();
         let imgAtualizar = realm.objects('Imagens').filtered('inspecao_id = "' + inspecao_id + '" AND nome = "' + nome + '"');
-        //console.log(imgAtualizar.length, inspecao_id, nome);
+
         realm.write(() => {
-            //inspecao[0].path = value.path;
             imgAtualizar[0].comentario = value.descricao;
             imgAtualizar[0].orientation = value.orientation;
         })
@@ -360,17 +356,17 @@ export default () => {
 
     const atualizarDocumento = async (inspecao_id, nome, value) => {
         const realm = await getRealm();
-        let inspecao = realm.objects('Documentos').filtered('inspecao_id = "' + inspecao_id + '" AND nome = "' + nome + '"');
-
+        let documento = realm.objects('Documentos').filtered('inspecao_id = "' + inspecao_id + '" AND nome = "' + nome + '"');
+        
         let data_validadeTemp = '';
         if (value.data_validade == null) {
             data_validadeTemp = 'null';
         }
         realm.write(() => {
-            inspecao[0].nome = value.nome;
-            inspecao[0].caminho = value.caminho;
-            inspecao[0].data_emissao = value.data_emissao;
-            inspecao[0].data_validade = data_validadeTemp;
+            documento[0].nome = value.nome;
+            documento[0].caminho = value.caminho;
+            documento[0].data_emissao = value.data_emissao;
+            documento[0].data_validade = data_validadeTemp;
         })
     }
 
@@ -401,7 +397,7 @@ export default () => {
             realm.create('Imagens', {
                 inspecao_id: value.inspecao_id,
                 nome: value.nome,
-                //path: value.path,
+                path: value.path,
                 status: "true",
                 comentario: value.descricao,
                 orientation: value.orientation,
@@ -414,6 +410,7 @@ export default () => {
         if (value.data_validade == null) {
             data_validadeTemp = 'null';
         }
+
         const realm = await getRealm();
         realm.write(() => {
             realm.create('Documentos', {
@@ -456,6 +453,7 @@ export default () => {
 
     const verificoSeTenhoAlgumaAlteracao = async () => {
         await verificoSeTenhoNovasInspecoes();
+
         const realm = await getRealm();
         let imagens = realm.objects('Imagens').filtered('status == "false"');
         if (imagens.length > 0) {
