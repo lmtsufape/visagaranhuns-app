@@ -201,7 +201,7 @@ export default () => {
                     atualizarDocumento(inspecao.inspecao_id, inspecao.nome, documento);
                     return;
                 }
-            } else if (docLocalizado.length == 0) {
+            } else if (docLocalizado.length == 0 && inspecao.inspecao_id == documento.inspecao_id) {
                 saveDocumento(documento)
                 return;
             }
@@ -223,7 +223,7 @@ export default () => {
                     atualizarImagem(inspecao.inspecao_id, inspecao.nome, imagem);
                     return
                 }
-            } else if (imgLocalizado.length == 0) {
+            } else if (imgLocalizado.length == 0 && inspecao.inspecao_id == imagem.inspecao_id) {
                 saveImagem(imagem);
                 return
             }
@@ -274,7 +274,6 @@ export default () => {
 
                 verificarDocumento(listaDocumentos, obj);
                 verificarImagem(listaImagens, obj);
-
             });
             deletarInspecao(arrayTemp);
         } else {
