@@ -18,8 +18,6 @@ import getRealm from '../../services/realm';
 import { CustomButtonProgramacao, LoadingIcon, CustomButtonHistorico, CustomButtonAtualizar, CustomButtonExit, CustomButtonText } from './styles';
 import { useNetInfo } from '@react-native-community/netinfo';
 import Api from '../../Api';
-import * as RNFS from 'react-native-fs';
-import RNFetchBlob from 'rn-fetch-blob';
 
 export default () => {
 
@@ -88,8 +86,8 @@ export default () => {
     }
 
     const apagarRealm = async () => {
-        const realm2 = await getRealm();
-        realm2.write(() => { realm2.deleteAll() });
+        const realm = await getRealm();
+        realm.write(() => { realm.deleteAll() });
     }
 
     const handleSincronizarClick = async () => {
@@ -193,17 +191,20 @@ export default () => {
             let docLocalizado = realm.objects('Documentos')
                 .filtered('inspecao_id = "' + inspecao.inspecao_id + '" AND nome = "' + documento.nome + '"');
 
-            if (docLocalizado.length == 1) {
-                if (docLocalizado[0].nome != documento.nome ||
-                    docLocalizado[0].caminho != documento.caminho ||
-                    docLocalizado[0].data_emissao != documento.data_emissao
-                ) {
-                    atualizarDocumento(inspecao.inspecao_id, inspecao.nome, documento);
+            if (inspecao.inspecao_id == documento.inspecao_id) {
+                if (docLocalizado.length == 1) {
+
+                    if (docLocalizado[0].nome != documento.nome ||
+                        docLocalizado[0].caminho != documento.caminho ||
+                        docLocalizado[0].data_emissao != documento.data_emissao
+                    ) {
+                        atualizarDocumento(inspecao, documento);
+                        return;
+                    }
+                } else if (docLocalizado.length == 0) {
+                    saveDocumento(documento)
                     return;
                 }
-            } else if (docLocalizado.length == 0 && inspecao.inspecao_id == documento.inspecao_id) {
-                saveDocumento(documento)
-                return;
             }
         });
     }
@@ -214,18 +215,20 @@ export default () => {
         listaImagem.forEach(imagem => {
             let imgLocalizado = realm.objects('Imagens').filtered('inspecao_id = "' + inspecao.inspecao_id + '" AND nome = "' + imagem.nome + '"');
 
-            if (imgLocalizado.length == 1) {
+            if (inspecao.inspecao_id == imagem.inspecao_id) {
+                if (imgLocalizado.length == 1) {
 
-                if (imgLocalizado[0].nome != imagem.nome ||
-                    imgLocalizado[0].comentario != imagem.descricao ||
-                    imgLocalizado[0].orientation != imagem.orientation
-                ) {
-                    atualizarImagem(inspecao.inspecao_id, inspecao.nome, imagem);
+                    if (imgLocalizado[0].nome != imagem.nome ||
+                        imgLocalizado[0].comentario != imagem.descricao ||
+                        imgLocalizado[0].orientation != imagem.orientation
+                    ) {
+                        atualizarImagem(inspecao.inspecao_id, inspecao.nome, imagem);
+                        return
+                    }
+                } else if (imgLocalizado.length == 0) {
+                    saveImagem(imagem);
                     return
                 }
-            } else if (imgLocalizado.length == 0 && inspecao.inspecao_id == imagem.inspecao_id) {
-                saveImagem(imagem);
-                return
             }
         });
     }
@@ -238,47 +241,37 @@ export default () => {
 
         if (typeof (json) != "undefined" && json.lista_inspecoes.length > 0) {
             let inspecoes = json.lista_inspecoes;
-            arrayTemp = [];
-            arrayTempImg = [];
-
             let listaDocumentos = json.lista_documentos;
-
             let listaImagens = json.lista_imagens;
 
             inspecoes.forEach(obj => {
 
                 let ins = realm.objects('Inspecoes').filtered('inspecao_id == "' + obj.inspecao_id + '"');
 
-                if (ins.length == 1 &&
-                    ins[0].inspecao_id == obj.inspecao_id &&
-                    ins[0].empresa_nome == obj.empresa_nome &&
-                    ins[0].rua == obj.rua &&
-                    ins[0].numero == obj.numero &&
-                    ins[0].bairro == obj.bairro &&
-                    ins[0].cep == obj.cep &&
-                    ins[0].cnpjcpf == obj.cnpjcpf &&
-                    ins[0].telefone1 == obj.telefone1 &&
-                    ins[0].telefone2 == obj.telefone2 &&
-                    ins[0].email == obj.email &&
-                    ins[0].data == obj.data &&
-                    ins[0].tipo == obj.tipo
-                ) {
-                    arrayTemp.push(obj.inspecao_id);
+                if (ins.length == 1) {
+                    if (ins[0].inspecao_id != obj.inspecao_id ||
+                        ins[0].empresa_nome != obj.empresa_nome ||
+                        ins[0].rua != obj.rua ||
+                        ins[0].numero != obj.numero ||
+                        ins[0].bairro != obj.bairro ||
+                        ins[0].cep != obj.cep ||
+                        ins[0].cnpjcpf != obj.cnpjcpf ||
+                        ins[0].telefone1 != obj.telefone1 ||
+                        ins[0].telefone2 != obj.telefone2 ||
+                        ins[0].email != obj.email ||
+                        ins[0].data != obj.data ||
+                        ins[0].tipo != obj.tipo) {
+                        atualizarInspecao(obj);
+                    }
                 } else if (ins.length == 0) {
                     saveInspecao(obj);
-                    arrayTemp.push(obj.inspecao_id);
-                } else {
-                    atualizarInspecao(obj);
-                    arrayTemp.push(obj.inspecao_id);
                 }
 
                 verificarDocumento(listaDocumentos, obj);
                 verificarImagem(listaImagens, obj);
             });
-            deletarInspecao(arrayTemp);
         } else {
-            const realm2 = await getRealm();
-            realm2.write(() => { realm2.deleteAll() });
+            apagarRealm();
         }
     }
     /*
@@ -316,32 +309,6 @@ export default () => {
         })
     }
 
-    //deletar Inspecao
-    const deletarInspecao = async (value) => {
-        const realm = await getRealm();
-        let ins = realm.objects('Inspecoes');
-        ins.forEach(item => {
-            let sts = value.indexOf(item.inspecao_id) > -1;
-            if (sts == false) {
-                let inspDelete = realm.objects('Inspecoes').filtered('inspecao_id = "' + item.inspecao_id + '"');
-                let docDelete = realm.objects('Documentos').filtered('inspecao_id = "' + item.inspecao_id + '"');
-                let imgDelete = realm.objects('Imagens').filtered('inspecao_id = "' + item.inspecao_id + '"');
-
-                realm.write(() => {
-                    realm.delete(inspDelete);
-                });
-
-                realm.write(() => {
-                    realm.delete(docDelete);
-                });
-
-                realm.write(() => {
-                    realm.delete(imgDelete);
-                });
-            }
-        })
-    }
-
     const atualizarImagem = async (inspecao_id, nome, value) => {
         const realm = await getRealm();
         let imgAtualizar = realm.objects('Imagens').filtered('inspecao_id = "' + inspecao_id + '" AND nome = "' + nome + '"');
@@ -353,16 +320,15 @@ export default () => {
 
     }
 
-    const atualizarDocumento = async (inspecao_id, nome, value) => {
+    const atualizarDocumento = async (inspecao, value) => {
         const realm = await getRealm();
-        let documento = realm.objects('Documentos').filtered('inspecao_id = "' + inspecao_id + '" AND nome = "' + nome + '"');
-        
+        let documento = realm.objects('Documentos').filtered('inspecao_id = "' + inspecao.inspecao_id + '" AND nome = "' + inspecao.nome + '"');
+
         let data_validadeTemp = '';
         if (value.data_validade == null) {
             data_validadeTemp = 'null';
         }
         realm.write(() => {
-            documento[0].nome = value.nome;
             documento[0].caminho = value.caminho;
             documento[0].data_emissao = value.data_emissao;
             documento[0].data_validade = data_validadeTemp;
