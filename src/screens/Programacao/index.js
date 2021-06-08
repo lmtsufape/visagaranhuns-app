@@ -1,15 +1,10 @@
 import React, {useState, useEffect, useContext }  from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { Text, Header, SectionList, ActivityIndicator, RefreshControl  } from 'react-native';
-import Api from '../../Api';
+import { RefreshControl  } from 'react-native';
+
 import { 
     Container,
     Scroller,
-    HeaderTitleBar,
-    HeaderArea,
-    HeaderOption,
-    TitlePagina,
-    OptionButton,
     ListArea,
     LoadingIcon,
 } from './styles';
