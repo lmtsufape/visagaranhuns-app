@@ -3,20 +3,13 @@ import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { UserContext } from '../../contexts/UserContext';
 import { useNavigation } from '@react-navigation/native';
-import {
-    Container,
-    Scroller,
-    HeaderTitleBar,
-    HeaderArea,
-} from './styles';
-
 import ApreentacaoIcon from '../../assets/logo_visagaranhuns_m.svg'
-import ProgramacaoIcon from '../../assets/logo_calendario'
-import AtualizarIcon from '../../assets/logo_atualizar'
-import SairIcon from '../../assets/logo_sair'
 import getRealm from '../../services/realm';
-import { CustomButtonProgramacao, LoadingIcon, CustomButtonHistorico, CustomButtonAtualizar, CustomButtonExit, CustomButtonText } from './styles';
+import { Container, LoadingIcon, CustomButton, CustomButtonText, View, FooterView, ImageView, Image } from './styles';
 import { useNetInfo } from '@react-native-community/netinfo';
+import FontIcon from 'react-native-vector-icons/FontAwesome5';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
+import OctIcon from 'react-native-vector-icons/Octicons';
 import Api from '../../Api';
 
 export default () => {
@@ -511,36 +504,33 @@ export default () => {
 
     return (
         <Container>
-            <Scroller>
+            <View>
+                <ApreentacaoIcon width="220" />
+                <CustomButton color='#D88366' onPress={handleProgramacaoClick}>
+                    <CustomButtonText font='18px' color='#fff'>Programação</CustomButtonText>
+                    <FontIcon name='calendar-check' size={30} color='#fff' />
+                </CustomButton>
+                <CustomButton color='#E2CF5E' onPress={handleSincronizarClick}>
 
-                <HeaderArea>
-                    <HeaderTitleBar>
-                        <ApreentacaoIcon width="220" />
-                    </HeaderTitleBar>
-
-                </HeaderArea>
-
-                <CustomButtonProgramacao onPress={handleProgramacaoClick}>
-                    <CustomButtonText>Programação</CustomButtonText>
-                    <ProgramacaoIcon width="50" />
-                </CustomButtonProgramacao>
-
-                <CustomButtonAtualizar onPress={handleSincronizarClick}>
-
-                    <CustomButtonText>Sincronizar</CustomButtonText>
+                    <CustomButtonText font='18px' color='#fff'>Sincronizar</CustomButtonText>
 
                     {loading == false
-                        ? <AtualizarIcon width="50" />
+                        ? <FontistoIcon name='spinner-refresh' size={30} color='#fff' />
                         : <LoadingIcon size="large" color="#fff" />
                     }
-                </CustomButtonAtualizar>
-
-                <CustomButtonExit onPress={handleLogoutClick}>
-                    <CustomButtonText>Sair do aplicativo</CustomButtonText>
-                    <SairIcon width="50" />
-                </CustomButtonExit>
-
-            </Scroller>
+                </CustomButton>
+                <CustomButton color='#B5CC71' onPress={handleLogoutClick}>
+                    <CustomButtonText font='18px' color='#fff'>Sair do aplicativo</CustomButtonText>
+                    <OctIcon name='sign-out' size={30} color='#fff' />
+                </CustomButton>
+            </View>
+            <FooterView>
+                <CustomButtonText font='14px' color='#000'>Desenvolvido por:</CustomButtonText>
+                <ImageView>
+                    <Image height='100px' width='40px' source={require('../../assets/logo_ufape.png')} />
+                    <Image height='40px' width='100px' source={require('../../assets/logo_lmts.png')} />
+                </ImageView>
+            </FooterView>
         </Container>
     );
 }

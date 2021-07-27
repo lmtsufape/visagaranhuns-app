@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, InfoArea, ContainerButton, CustomButtonTirarFoto, CustomButtonGaleria, CustomButtonText, LoadingIcon } from './styles';
+import { Container, InfoArea, ButtonsView, CustomButton, CustomButtonText, LoadingIcon } from './styles';
 import { Image, StyleSheet, TouchableOpacity, View, FlatList, Dimensions } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useRoute } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import Api from '../../Api';
 import AsyncStorage from '@react-native-community/async-storage';
 import getRealm from '../../services/realm';
 import { useNavigation } from '@react-navigation/native';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const numColumns = 3;
 const WIDTH = Dimensions.get('window').width;
@@ -131,14 +132,16 @@ export default () => {
     return (
         <Container>
             <InfoArea>
-                <ContainerButton>
-                    <CustomButtonTirarFoto onPress={() => pickSingWithCamera(false)}>
-                        <CustomButtonText>Fotografar</CustomButtonText>
-                    </CustomButtonTirarFoto>
-                    <CustomButtonGaleria onPress={() => pickSingWithGalery(false)}>
-                        <CustomButtonText>Abrir galeria</CustomButtonText>
-                    </CustomButtonGaleria>
-                </ContainerButton>
+                <ButtonsView>
+                    <CustomButton color='#d6ffe4' onPress={() => pickSingWithCamera(false)}>
+                        <IonIcon name='ios-image-sharp' size={35} color='#22cc99' />
+                        <CustomButtonText color='#22cc99'>Fotografar</CustomButtonText>
+                    </CustomButton>
+                    <CustomButton color='#d7ffd6' onPress={() => pickSingWithGalery(false)}>
+                        <IonIcon name='camera' size={35} color='#4ecc22' />
+                        <CustomButtonText color='#4ecc22'>Galeria</CustomButtonText>
+                    </CustomButton>
+                </ButtonsView>
             </InfoArea>
             {loading &&
                 <LoadingIcon size="large" color="#909090" />

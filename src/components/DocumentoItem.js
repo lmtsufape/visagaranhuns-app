@@ -4,20 +4,18 @@ import { useNavigation } from '@react-navigation/native';
 import Api from '../Api';
 
 const Area = styled.TouchableOpacity`
-    background-color:#fff;
-    margin-bottom:20px;
+    background-color: #f7f7f8;
+    margin-bottom:10px;
     border-radius:12px;
     padding:15px;
     flex-direction:row;
     margin-left:18px;
     margin-right:18px;
-    shadowOpacity: 0.27;
-    elevation: 6;
 `;
 const InfoArea = styled.View`
-    margin-left:15px;
-    width:90%;
-    justify-content:space-between;
+    margin-left: 10px;
+    width: 95%;
+    justify-content: space-between;
 `;
 const NomeDoEstabelecimento = styled.Text`
     marginTop:10px;
@@ -26,7 +24,8 @@ const NomeDoEstabelecimento = styled.Text`
     marginBottom:5px;
 `;
 const TipoRequerimento = styled.Text`
-    font-size:14px;
+    color: #909090;
+    font-size: 14px;
 `;
 const DescricaoCnae = styled.Text`
     font-size:14px;
