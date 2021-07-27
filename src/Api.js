@@ -5,7 +5,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 
 
 //const BASE_API = 'http://192.168.0.106'; //garanhuns
-// const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
+const BASE_API = 'http://sistemas.ufape.edu.br/visagaranhuns'; //garanhuns
 //const BASE_API = 'http://192.168.15.10'; //recife
 
 export default {

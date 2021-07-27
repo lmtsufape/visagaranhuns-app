@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { Container, InfoAreaEstabelecimentoText, InfoAreaInspecaoText, InfoCardText, InfoAreaEstabelecimento, InfoAreaInspecao, CustomButtonDocumentacao, CustomButtonText, CustomButtonInspecao } from './styles';
+import { Container, InfoArea, Div, Title, Text, DataView, TitleView, ButtonsView, CustomButtonText, CustomButton } from './styles';
 import { useRoute, useNavigation } from '@react-navigation/native';
-
-import LocalizarIcon from '../../assets/logo_localizar'
-import PapelIcon from '../../assets/logo_papel'
+import OctIcon from 'react-native-vector-icons/Octicons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 export default () => {
     const regex = /(<([^>]+)>)/ig;
@@ -41,58 +40,108 @@ export default () => {
         <Container>
             {useInfo.cnpjcpf != ""
                 ? <View>
-                    <InfoAreaEstabelecimento>
-                        <InfoAreaEstabelecimentoText>{useInfo.nome.toUpperCase()}</InfoAreaEstabelecimentoText>
-                        <InfoCardText>CNPJ/CPF: {useInfo.cnpjcpf}</InfoCardText>
-                        <InfoCardText>Representante Legal: {useInfo.representante_legal}</InfoCardText>
-
-                        <InfoAreaEstabelecimentoText>Contato</InfoAreaEstabelecimentoText>
-                        <InfoCardText>E-mail: {useInfo.email}</InfoCardText>
-                        <InfoCardText>Telefone 1: {useInfo.telefone1}</InfoCardText>
+                    <InfoArea>
+                        <Title>{useInfo.nome.toUpperCase()}</Title>
+                        <DataView>
+                            <Text color='#909090'>CNPJ/CPF: </Text>
+                            <Text color='#000'>{useInfo.cnpjcpf}</Text>
+                        </DataView>
+                        <DataView>
+                            <Text color='#909090'>Representante Legal: </Text>
+                            <Text color='#000'>{useInfo.representante_legal}</Text>
+                        </DataView>
+                        <Div />
+                        <Title>Endereço e Contato</Title>
+                        <DataView>
+                            <Text color='#909090'>Bairro: </Text>
+                            <Text color='#000'>{useInfo.bairro}</Text>
+                        </DataView>
+                        <DataView>
+                            <Text color='#909090'>Rua: </Text>
+                            <Text color='#000'>{useInfo.rua} - Nº: {useInfo.numero}</Text>
+                        </DataView>
+                        <DataView>
+                            <Text color='#909090'>CEP: </Text>
+                            <Text color='#000'>{useInfo.cep}</Text>
+                        </DataView>
+                        <DataView>
+                            <Text color='#909090'>Email: </Text>
+                            <Text color='#000'>{useInfo.email}</Text>
+                        </DataView>
+                        <DataView>
+                            <Text color='#909090'>Telefone 1: </Text>
+                            <Text color='#000'>{useInfo.telefone1}</Text>
+                        </DataView>
                         {useInfo.telefone2 != "null"
-                            ? <InfoCardText>Telefone 2: {useInfo.telefone2}</InfoCardText>
-                            : <InfoCardText></InfoCardText>
+                            ? <DataView>
+                                <Text color='#909090'>Telefone 2: </Text>
+                                <Text color='#000'>{useInfo.telefone2}</Text>
+                            </DataView>
+                            : <Text></Text>
                         }
-                        <InfoAreaEstabelecimentoText>Endereço</InfoAreaEstabelecimentoText>
-                        <InfoCardText>Bairro: {useInfo.bairro}</InfoCardText>
-                        <InfoCardText>Rua: {useInfo.rua} - Nº: {useInfo.numero}</InfoCardText>
-                        <InfoCardText>CEP: {useInfo.cep}</InfoCardText>
-                    </InfoAreaEstabelecimento>
-                    <InfoAreaInspecao>
-                        <InfoAreaInspecaoText>INSPEÇÃO</InfoAreaInspecaoText>
-                        <InfoCardText>Tipo: {useInfo.tipo}</InfoCardText>
+                        <Div />
+                        <TitleView>
+                            <Title>Inspeção</Title>
+                            <DataView>
+                                <OctIcon name='alert' size={14} color='#ffd12d' />
+                                <Text color='#909090'>25/05/2021</Text >
+                            </DataView>
+                        </TitleView>
+                        <DataView>
+                            <Text color='#909090'>Tipo: </Text>
+                            <Text color='#000'>{useInfo.tipo}</Text>
+                        </DataView>
                         {useInfo.tipo != "Denuncia"
-                            ? <InfoCardText>CNAE: {useInfo.descricao}</InfoCardText>
-                            : <InfoCardText>Motivo: {useInfo.descricao.replace(regex, '')}</InfoCardText>
+                            ? <DataView>
+                                <Text color='#909090'>CNAE: </Text>
+                                <Text color='#000'>{useInfo.descricao}</Text>
+                            </DataView>
+                            : <DataView>
+                                <Text color='#909090'>Motivo: </Text>
+                                <Text color='#000'>{useInfo.descricao.replace(regex, '')}</Text>
+                            </DataView>
                         }
-                        {useInfo.tipo != "Denuncia"
-                            ? <CustomButtonDocumentacao onPress={handleDocumentacaoClick}>
-                                <CustomButtonText>Documentação</CustomButtonText>
-                                <PapelIcon width="50" />
-                            </CustomButtonDocumentacao>
-                            : <View></View>
-                        }
-                        <CustomButtonInspecao onPress={handleInspecionarClick}>
-                            <CustomButtonText>Inspecionar</CustomButtonText>
-                            <LocalizarIcon width="50" />
-                        </CustomButtonInspecao>
-                    </InfoAreaInspecao>
+                        <Div />
+                        <ButtonsView>
+                            {useInfo.tipo != "Denuncia"
+                                ? <CustomButton color='#d6eeff' onPress={handleDocumentacaoClick}>
+                                    <IonIcon name='document-sharp' size={35} color='#039aff' />
+                                    <CustomButtonText color='#039aff'>Documentos</CustomButtonText>
+                                </CustomButton>
+                                : <View></View>
+                            }
+                            <CustomButton color='#d7ffd6' onPress={handleInspecionarClick}>
+                                <IonIcon name='camera' size={35} color='#4ecc22' />
+                                <CustomButtonText color='#4ecc22'>Fotografar</CustomButtonText>
+                            </CustomButton>
+                        </ButtonsView>
+                    </InfoArea>
                 </View>
                 : <View>
-                    <InfoAreaEstabelecimento>
-                        <InfoAreaEstabelecimentoText>{useInfo.nome.toUpperCase()}</InfoAreaEstabelecimentoText>
-                        <InfoAreaEstabelecimentoText>Endereço</InfoAreaEstabelecimentoText>
-                        <InfoCardText>Rua: {useInfo.rua}</InfoCardText>
-                    </InfoAreaEstabelecimento>
-                    <InfoAreaInspecao>
-                        <InfoAreaInspecaoText>INSPEÇÃO</InfoAreaInspecaoText>
-                        <InfoCardText>Tipo: Denúncia</InfoCardText>
-                        <InfoCardText>Motivo: {useInfo.descricao.replace(regex, '')}</InfoCardText>
-                        <CustomButtonInspecao onPress={handleInspecionarClick}>
-                            <CustomButtonText>Inspecionar</CustomButtonText>
-                            <LocalizarIcon width="50" />
-                        </CustomButtonInspecao>
-                    </InfoAreaInspecao>
+                    <InfoArea>
+                        <Title>{useInfo.nome.toUpperCase()}</Title>
+                        <Div />
+                        <Title>Endereço</Title>
+                        <DataView>
+                            <Text color='#909090'>Rua: </Text>
+                            <Text color='#000'>{useInfo.rua} - Nº: {useInfo.numero}</Text>
+                        </DataView>
+                        <Div />
+                        <Title>Inspeção</Title>
+                        <DataView>
+                            <Text color='#909090'>Tipo: </Text>
+                            <Text color='#000'>Denúncia</Text>
+                        </DataView>
+                        <DataView>
+                            <Text color='#909090'>Motivo: </Text>
+                            <Text color='#000'>{useInfo.descricao.replace(regex, '')}</Text>
+                        </DataView>
+                        <Div />
+                        <CustomButton color='#d7ffd6' onPress={handleInspecionarClick}>
+                            <IonIcon name='camera' size={50} color='#4ecc22' />
+                            <CustomButtonText color='#4ecc22'>Fotografar</CustomButtonText>
+                        </CustomButton>
+                    </InfoArea>
                 </View>
             }
         </Container>

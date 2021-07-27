@@ -2,65 +2,69 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 export const Container = styled.ScrollView` 
-    flex:1;
-    flexDirection:column;
-    padding:20px;
+    flex: 1;
+    padding: 10px;
 `;
-export const InfoAreaEstabelecimento = styled.View`
-    background-color:#fff;
-    margin-bottom:20px;
-    border-radius:8px;
-    padding:15px;
-    shadowOpacity: 0.27;
-    elevation: 6;
+export const InfoArea = styled.View`
+    background-color: #f7f7f8;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 10px;
 `;
-export const InfoAreaInspecao = styled.View`
-    background-color:#fff;
-    margin-bottom:20px;
-    border-radius:8px;
-    padding:15px;
-    shadowOpacity: 0.27;
-    elevation: 6;
-    marginBottom:50px;
-    paddingBottom:20px;
+
+export const DataView = styled.View`
+    flex-direction: row;
+    align-items: center;
 `;
-export const InfoAreaEstabelecimentoText = styled.Text`
-    marginTop:10px;
+
+export const TitleView = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin-right: 5px;
+`;
+
+export const Title = styled.Text`
+    margin-top: 5px;
+    margin-vertical:5px;
     fontWeight:bold;
     fontSize:18px;
-    marginBottom:5px;
 `;
-export const InfoCardText = styled.Text`
-    fontSize:16px;
+
+export const Text = styled.Text`
+    margin: 2px;
+    color: ${props => props.color};
+    fontSize: 14px;
 `;
-export const InfoAreaInspecaoText = styled.Text`
-    marginTop:10px;
-    fontWeight:bold;
-    fontSize:18px;
-    marginBottom:5px;
+
+export const Div = styled.View`
+    margin-top: 15px;
+    border: 0.5px;
+    border-color: #d9d9d9;
 `;
-export const CustomButtonDocumentacao = styled.TouchableOpacity`
-    background-color: #88B6B6;
-    border-radius:12px;
-    justify-content:space-between;
-    flex-direction:row
-    padding:25px;
-    margin-top:20px;
-    shadowOpacity: 0.27;
-    elevation: 5;
+
+export const ButtonsView = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin-top: 15px;
+    margin-right: 5px;
 `;
+
+export const CustomButton = styled.TouchableOpacity`
+    width: 150px;
+    background-color: ${props => props.color};
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    margin: 10px;
+`;
+
 export const CustomButtonText = styled.Text`
-    font-size:18px;
-    color:#fff;
-    margin-top:28px;
-`;
-export const CustomButtonInspecao = styled.TouchableOpacity`
-    background-color: #71CC71;
-    border-radius:12px;
-    justify-content:space-between;
-    flex-direction:row
-    padding:25px;
-    margin-top:15px;
-    shadowOpacity: 0.27;
-    elevation: 5;
+    font-size: 16px;
+    color: ${props => props.color};
+    margin:5px;
 `;

@@ -3,41 +3,41 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
     flex:1;
+    padding: 15px;
 `;
 export const InfoArea = styled.View`
-    background-color:#fff;
+    background-color: #f7f7f8;
     margin-bottom:20px;
     border-radius:8px;
-    padding:10px;
-    shadowOpacity: 0.27;
-    elevation: 6;
-    margin:15px;
+    padding:5px;
+    margin:10px;
 `;
-export const ContainerButton = styled.View`
-    flexDirection:row;
+
+export const ButtonsView = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin-top: 15px;
+    margin-right: 5px;
 `;
-export const CustomButtonTirarFoto = styled.TouchableOpacity`
-    background-color: #88c425;
-    border-radius:12px;
-    padding:25px;
-    shadowOpacity: 0.27;
-    elevation: 5;
-    marginLeft:6px;
+
+export const CustomButton = styled.TouchableOpacity`
+    width: 150px;
+    background-color: ${props => props.color};
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    margin: 10px;
 `;
-export const CustomButtonGaleria = styled.TouchableOpacity`
-    background-color: #1b676b;
-    border-radius:12px;
-    padding:25px;
-    shadowOpacity: 0.27;
-    elevation: 5;
-    marginLeft:10px;
-`;
+
 export const CustomButtonText = styled.Text`
-    font-size:18px;
-    color:#fff;
-    font-weight:bold;
-    textAlign:center;
+    font-size: 16px;
+    color: ${props => props.color};
+    margin:5px;
 `;
+
 export const InfoText = styled.Text`
     font-size:20px;
     color:black;
